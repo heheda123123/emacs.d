@@ -1,5 +1,5 @@
 ;; 界面设置
-(set-face-attribute 'default nil :font (font-spec :family "FiraCode NF" :size 25))
+(set-face-attribute 'default nil :font (font-spec :family "FiraCode NFM" :size 25))
 
 ;; 包前的设置
 (setq mouse-wheel-scroll-amount '(3 ((shift) . 1) ((control) . 10)))
@@ -85,6 +85,10 @@
 (defun my-open-current-directory ()
   (interactive)
   (consult-directory-externally default-directory))
+  
+(defun set-vundo () 
+	(vundo)
+	(vundo-backward 1))
 
 (use-package evil
   :init
@@ -111,14 +115,10 @@
     (evil-define-key 'normal 'global (kbd "<localleader>0") 'delete-other-windows)
     (evil-define-key 'normal 'global (kbd "<localleader>/") 'split-window-right)
     (evil-define-key 'normal 'global (kbd "<localleader>-") 'split-window-below)
+	(evil-define-key '(normal visual) 'global "u" 'set-vundo)
   ))
-(evil-define-key '(normal visual) 'global
-  "u" (lambda ()
-        (interactive)
-        (if (not (fboundp 'vundo))
-            (evil-undo 1)
-          (vundo)
-          (vundo-backward 1))))
+  
+
 (use-package evil-nerd-commenter
   :ensure t
   :config (evilnc-default-hotkeys))
