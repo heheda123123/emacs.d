@@ -86,9 +86,6 @@
   (interactive)
   (consult-directory-externally default-directory))
   
-(defun set-vundo () 
-	(vundo)
-	(vundo-backward 1))
 
 (use-package evil
   :init
@@ -115,7 +112,7 @@
     (evil-define-key 'normal 'global (kbd "<localleader>0") 'delete-other-windows)
     (evil-define-key 'normal 'global (kbd "<localleader>/") 'split-window-right)
     (evil-define-key 'normal 'global (kbd "<localleader>-") 'split-window-below)
-	(evil-define-key '(normal visual) 'global "u" 'set-vundo)
+    (evil-define-key '(normal visual) 'global "u" (lambda () (interactive) (if (not (fboundp 'vundo)) (evil-undo 1) (vundo) (vundo-backward 1))))
   ))
   
 
