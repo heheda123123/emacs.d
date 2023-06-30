@@ -1,4 +1,3 @@
-;; 初始化界面的最先调用
 (setq inhibit-startup-message t)
 (setq default-frame-alist
       '((menu-bar-lines . 0)
@@ -13,4 +12,5 @@
     (set-frame-height (selected-frame) 50))
 (xiaozhu/reset-frame-size)
 (add-hook 'after-make-frame-functions 'xiaozhu/reset-frame-size)
+
 (global-display-line-numbers-mode)
