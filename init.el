@@ -1,5 +1,5 @@
 ;; 界面设置
-(set-face-attribute 'default nil :font (font-spec :family "FiraCode NFM" :size 25))
+(set-face-attribute 'default nil :font (font-spec :family "FiraCode NF" :size 25))
 
 ;; 包前的设置
 (setq mouse-wheel-scroll-amount '(3 ((shift) . 1) ((control) . 10)))
@@ -12,8 +12,17 @@
   (find-file "~/.emacs.d/init.el"))
 (global-set-key (kbd "<f12>") 'open-init-file)
 
-(require 'recentf)
-(recentf-mode 1)
+(defun open-newline-below (arg)
+  "Move to the next line (like vi) and then opens a line."
+  (interactive "p")
+  (end-of-line)
+  (open-line arg)
+  (call-interactively 'next-line arg)
+  (if (not (member major-mode '(haskell-mode org-mode literate-haskell-mode)))
+      (indent-according-to-mode)
+    (beginning-of-line)))
+
+
 (setq ring-bell-function 'ignore)
 (fset 'yes-or-no-p 'y-or-n-p)
 
@@ -28,55 +37,146 @@
     (package-refresh-contents)
     (package-install 'use-package))
 
+(use-package recentf
+  :defer 2
+  :ensure nil
+  :config (recentf-mode t))
+
 ;;(package-install 'keycast)
 ;;(keycast-mode-line-mode t)
 
-;;(use-package popwin
-  ;;:ensure t
-  ;;:config (popwin-mode t))
+;; (use-package popwin
+;;   :ensure t
+;;   :config (progn
+;; 	    (popwin-mode t)
+;; 	    (push '("^\\*helpful.*\\*$" :regexp t) popwin:special-display-config)
+;; 	    ))
+
+;; (use-package dashboard
+;;   :ensure t
+;;   :config (dashboard-setup-startup-hook)
+;;   :init
+;;   (progn
+;;     (setq dashboard-banner-logo-title "hello world")
+;;     (setq dashboard-startup-banner nil)
+;;     (setq dashboard-center-content t)
+;;     (setq dashboard-show-shortcuts nil)
+;;     (setq dashboard-items '((recents  . 10)
+;;                         (projects . 5)
+;;                         ))
+;;   ))
+
+(use-package helpful
+  :ensure t
+  :bind (
+	 ("C-h f" . helpful-callable)
+	 ("C-h v" . helpful-variable)
+	 ("C-h k" . helpful-key)
+	 ("C-h a" . apropos)
+	 )
+   :config (add-hook 'helpful-mode-hook '(lambda () (evil-emacs-state)))
+  )
+(use-package elisp-demos
+  :after (helpful)
+  :config (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update))
 
 (use-package vertico
+  :defer 1
   :ensure t
   :config (vertico-mode t))
 
 (use-package orderless
+  :defer 1
   :ensure t
+  :after (vertico)
   :init (setq completion-styles '(orderless)))
 
 (use-package marginalia
+  :defer 2
+  :after (vertico)
   :ensure t
   :config (marginalia-mode t))
 
 (use-package embark
+  :defer 2
   :ensure t
   :init (setq prefix-help-command 'embark-prefix-help-command)
   :bind ("C-;" . embark-act))
 
 (use-package consult
+  :defer 1
   :ensure t
-  :config (global-set-key (kbd "C-s") 'consult-line))
+  :bind("C-s" . consult-line)
+  )
 
 (use-package winum
+  :defer 1
   :ensure t
   :config (winum-mode))
 
-(use-package which-key
-  :ensure t
-  :config
-  (which-key-mode))
+;; (use-package which-key
+;;   :ensure t
+;;   :config
+;;   (which-key-mode))
 
 (use-package vundo
+  :defer 3
+  :after (evil)
   :ensure t)
-;;(add-to-list 'load-path "~/emacs-plugin/lsp-bridge")
-;;(require 'yasnippet)
-;;(yas-global-mode 1)
-;;(require 'lsp-bridge)
-;;(global-lsp-bridge-mode)
 
-;;(add-to-list 'load-path "~/emacs-plugin/blink-search")
-;;(require 'blink-search)
-;;(require 'benchmark)
-;;(message "%s" (benchmark-elapse (blink-search-start-process) (message "Hello!")))
+
+;; (add-to-list 'load-path "~/emacs-plugin/emacs-application-framework/")
+;; (require 'eaf)
+;; (require 'eaf-browser)
+;; (require 'eaf-pdf-viewer)
+
+;; (require 'yasnippet)
+;; (yas-global-mode 1)
+(use-package yasnippet
+  :ensure t
+  :defer 4
+  :config (yas-global-mode 1))
+
+(add-to-list 'load-path "~/emacs-plugin/lsp-bridge")
+(require 'lsp-bridge)
+(global-lsp-bridge-mode)
+
+;; (add-to-list 'load-path "~/emacs-plugin/blink-search")
+;; (require 'blink-search)
+;; ;;(blink-search-start-process)
+;;   ;;"Start Blink-Search process if it isn't started."
+;; (setq blink-search-is-starting t)
+;; (blink-search-epc-live-p blink-search-epc-process)
+
+;;     ;;start epc server and set `blink-search-server-port'
+;;     (blink-search--start-epc-server)
+;;      (setq blink-search-args (append
+;;                                (list blink-search-python-file)
+;;                                (list (number-to-string blink-search-server-port))
+;;                                ))
+
+;;       ;;Set process arguments.
+;;       (if blink-search-enable-debug
+;;           (progn
+;;             (setq blink-search-internal-process-prog "gdb")
+;;             (setq blink-search-internal-process-args (append (list "-batch" "-ex" "run" "-ex" "bt" "--args" blink-search-python-command) blink-search-args)))
+;;         (setq blink-search-internal-process-prog blink-search-python-command)
+;;         (setq blink-search-internal-process-args blink-search-args))
+
+;;       ;;Start python process.
+;; (setq process-connection-type (not (blink-search--called-from-wsl-on-windows-p)))
+
+;;         (setq blink-search-internal-process
+;;               (apply 'start-process
+;;                      blink-search-name blink-search-name
+;;                      blink-search-internal-process-prog blink-search-internal-process-args))
+
+;;       (set-process-query-on-exit-flag blink-search-internal-process nil)
+
+
+
+
+
 
 (defun consult-directory-externally (file)
   (interactive)
@@ -86,6 +186,13 @@
   (interactive)
   (consult-directory-externally default-directory))
   
+
+(use-package projectile
+  :defer 3
+  :commands (projectile-switch-project projectile-switch-to-buffer projectile-find-file)
+  :config
+  (projectile-mode 1)
+  (define-key projectile-mode-map (kbd "C-c C-p") 'projectile-command-map))
 
 (use-package evil
   :init
@@ -97,14 +204,22 @@
     (define-key evil-insert-state-map [escape] 'evil-normal-state)
     (evil-set-leader 'normal (kbd ","))
     (evil-set-leader 'normal (kbd "SPC") t)
+    (evil-define-key 'normal 'global (kbd "RET") 'open-newline-below)
     (evil-define-key 'normal 'global (kbd "<leader>ff") 'find-file)
     (evil-define-key 'normal 'global (kbd "<leader>fc") 'my-open-current-directory)
     (evil-define-key 'normal 'global (kbd "<leader>bb") 'switch-to-buffer)
     (evil-define-key 'normal 'global (kbd "<leader>bk") 'kill-buffer)
     (evil-define-key 'normal 'global (kbd "<leader>ss") 'consult-line)
+    (evil-define-key 'normal 'global (kbd "<leader>sn") 'consult-imenu)
     (evil-define-key 'normal 'global (kbd "<leader>qq") 'consult-ripgrep)
     (evil-define-key 'normal 'global (kbd "<leader>rr") 'consult-recent-file)
-    (evil-define-key 'normal 'global (kbd "<leader>p") 'projectile-command-map)
+    (evil-define-key 'normal 'global (kbd "<leader>hf") 'helpful-callable)
+    (evil-define-key 'normal 'global (kbd "<leader>hv") 'helpful-variable)
+    (evil-define-key 'normal 'global (kbd "<leader>hk") 'helpful-key)
+    (evil-define-key 'normal 'global (kbd "<leader>ha") 'apropos)
+    (evil-define-key 'normal 'global (kbd "<leader>pp") 'projectile-switch-project)
+    (evil-define-key 'normal 'global (kbd "<leader>pb") 'projectile-switch-to-buffer)
+    (evil-define-key 'normal 'global (kbd "<leader>pf") 'projectile-find-file)
     (evil-define-key 'normal 'global (kbd "<localleader>1") 'winum-select-window-1)
     (evil-define-key 'normal 'global (kbd "<localleader>2") 'winum-select-window-2)
     (evil-define-key 'normal 'global (kbd "<localleader>3") 'winum-select-window-3)
@@ -117,13 +232,14 @@
   
 
 (use-package evil-nerd-commenter
+  :after (evil)
   :ensure t
   :config (evilnc-default-hotkeys))
 
-(use-package evil-surround
-  :ensure t
-  :config
-  (global-evil-surround-mode 1))
+;; (use-package evil-surround
+;;   :ensure t
+;;   :config
+;;   (global-evil-surround-mode 1))
 
 ;; (use-package magit
 ;;   :ensure t)
@@ -147,25 +263,11 @@
   ;;(setq lsp-ui-doc-position 'top))
 
 
-;;(use-package company
-  ;;:ensure t
-  ;;:init (global-company-mode)
-  ;;:config
-  ;;(setq company-minimum-prefix-length 1) ; 只需敲 1 个字母就开始进行自动补全
-  ;;(setq company-tooltip-align-annotations t)
-  ;;(setq company-idle-delay 0.0)
-  ;;(setq company-show-numbers t) ;; 给选项编号 (按快捷键 M-1、M-2 等等来进行选择).
-  ;;(setq company-selection-wrap-around t)
-  ;;(setq company-transformers '(company-sort-by-occurrence)))
 ;;(use-package lsp-pyright
   ;;:ensure t
   ;;:hook (python-mode . (lambda ()
                           ;;(require 'lsp-pyright)
                           ;;(lsp))))  ; or lsp-deferred
-;;(use-package company-box
-  ;;:ensure t
-  ;;:if window-system
-  ;;:hook (company-mode . company-box-mode))
 ;;(use-package flycheck
   ;;:ensure t
   ;;:config
@@ -173,19 +275,29 @@
   ;;:hook
   ;;(prog-mode . flycheck-mode))
 ;;
-(use-package projectile
-  :ensure t
-  :bind (("C-c p" . projectile-command-map))
-  :config
-  (progn 
-    (projectile-mode t)
-    (setq projectile-mode-line "Projectile")
-  ))
 
-;;(use-package consult-projectile
-  ;;:ensure t
-  ;;:after (projectile)
-  ;;:init (consult-projectile))
+
+
+;; (use-package company
+;;   :defer 5
+;;   :ensure t
+;;   :hook (prog-mode . company-mode)
+;;   :config
+;;   (setq company-tooltip-align-annotations t ; 注释贴右侧对齐
+;;         company-tooltip-limit 20            ; 菜单里可选项数量
+;;         company-show-numbers t              ; 显示编号（然后可以用 M-数字 快速选定某一项）
+;;         company-idle-delay .2               ; 延时多少秒后弹出
+;;         company-minimum-prefix-length 1     ; 至少几个字符后开始补全
+;;         ))
+
+;; (use-package company-prescient
+;;   :ensure t
+;;   :after (company)
+;;   :config (company-prescient-mode t))
+
+;; (use-package esup
+;;   :ensure t)
+
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -196,9 +308,9 @@
    '("a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e"
      default))
  '(package-selected-packages
-   '(treesit-auto yasnippet vertico use-package orderless markdown-mode
-		  marginalia keycast gcmh embark-consult diminish
-		  counsel cnfonts)))
+   '(epc treesit-auto yasnippet vertico use-package orderless
+	 markdown-mode marginalia keycast gcmh embark-consult diminish
+	 counsel cnfonts)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
