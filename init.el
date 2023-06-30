@@ -1,5 +1,5 @@
 ;; 界面设置
-(set-face-attribute 'default nil :font (font-spec :family "FiraCode NF" :size 25))
+(set-face-attribute 'default nil :font (font-spec :family "FiraCode NFM" :size 25))
 
 ;; 包前的设置
 (setq mouse-wheel-scroll-amount '(3 ((shift) . 1) ((control) . 10)))
@@ -36,6 +36,15 @@
 (unless (package-installed-p 'use-package)
     (package-refresh-contents)
     (package-install 'use-package))
+
+;; (use-package monokai-theme
+;;   :ensure t
+;;   :config (load-theme 'monokai t))
+
+(use-package zenburn-theme
+  :ensure t
+  :config (load-theme 'zenburn t)
+  )
 
 (use-package recentf
   :defer 2
@@ -74,9 +83,9 @@
 	 ("C-h k" . helpful-key)
 	 ("C-h a" . apropos)
 	 )
-   :config (add-hook 'helpful-mode-hook '(lambda () (evil-emacs-state)))
   )
 (use-package elisp-demos
+  :ensure t
   :after (helpful)
   :config (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update))
 
@@ -91,17 +100,48 @@
   :after (vertico)
   :init (setq completion-styles '(orderless)))
 
+;; (use-package embark
+;;   :defer 2
+;;   :ensure t
+;;   :init (setq prefix-help-command 'embark-prefix-help-command)
+;;   :bind ("C-;" . embark-act))
 (use-package marginalia
-  :defer 2
-  :after (vertico)
+  :defer 3
   :ensure t
-  :config (marginalia-mode t))
+  :config
+  (marginalia-mode))
 
 (use-package embark
-  :defer 2
   :ensure t
-  :init (setq prefix-help-command 'embark-prefix-help-command)
-  :bind ("C-;" . embark-act))
+  :bind
+  (("C-;" . embark-act)         ;; pick some comfortable binding
+   ;; ("C-;" . embark-dwim)        ;; good alternative: M-.
+   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+
+  :init
+
+  ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
+
+  ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
+  ;; strategy, if you want to see the documentation from multiple providers.
+  (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+  ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+
+  :config
+
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
+
+;; Consult users will also want the embark-consult package.
+(use-package embark-consult
+  :ensure t ; only need to install it, embark loads it after consult if found
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+
 
 (use-package consult
   :defer 1
@@ -140,6 +180,11 @@
 (add-to-list 'load-path "~/emacs-plugin/lsp-bridge")
 (require 'lsp-bridge)
 (global-lsp-bridge-mode)
+
+(add-hook 'lsp-bridge-ref-mode-hook '(lambda () (evil-emacs-state)))
+(add-hook 'embark-collect-mode-hook '(lambda () (evil-emacs-state)))
+(add-hook 'helpful-mode-hook '(lambda () (evil-emacs-state)))
+
 
 ;; (add-to-list 'load-path "~/emacs-plugin/blink-search")
 ;; (require 'blink-search)
@@ -186,6 +231,9 @@
   (interactive)
   (consult-directory-externally default-directory))
   
+(use-package avy
+  :ensure t
+  :bind ("C-'" . avy-goto-char-timer))
 
 (use-package projectile
   :defer 3
@@ -217,6 +265,7 @@
     (evil-define-key 'normal 'global (kbd "<leader>hv") 'helpful-variable)
     (evil-define-key 'normal 'global (kbd "<leader>hk") 'helpful-key)
     (evil-define-key 'normal 'global (kbd "<leader>ha") 'apropos)
+    (evil-define-key 'normal 'global (kbd "<leader>hb") 'embark-bindings)
     (evil-define-key 'normal 'global (kbd "<leader>pp") 'projectile-switch-project)
     (evil-define-key 'normal 'global (kbd "<leader>pb") 'projectile-switch-to-buffer)
     (evil-define-key 'normal 'global (kbd "<leader>pf") 'projectile-find-file)
@@ -227,6 +276,12 @@
     (evil-define-key 'normal 'global (kbd "<localleader>0") 'delete-other-windows)
     (evil-define-key 'normal 'global (kbd "<localleader>/") 'split-window-right)
     (evil-define-key 'normal 'global (kbd "<localleader>-") 'split-window-below)
+    (define-key evil-normal-state-map (kbd "gd") 'lsp-bridge-find-def)
+    (define-key evil-normal-state-map (kbd "C-]") 'lsp-bridge-find-def)
+    (evil-define-key 'normal 'global (kbd "<leader>md") 'lsp-bridge-find-def)
+    (evil-define-key 'normal 'global (kbd "<leader>mr") 'lsp-bridge-find-references)
+    (evil-define-key 'normal 'global (kbd "<leader>mo") 'lsp-bridge-popup-documentation)
+    (evil-define-key 'normal 'global (kbd "<leader>ma") 'lsp-bridge-diagnostic-list)
     (evil-define-key '(normal visual) 'global "u" (lambda () (interactive) (if (not (fboundp 'vundo)) (evil-undo 1) (vundo) (vundo-backward 1))))
   ))
   
@@ -305,7 +360,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e"
+   '("37c8c2817010e59734fe1f9302a7e6a2b5e8cc648cf6a6cc8b85f3bf17fececf"
+     "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e"
      default))
  '(package-selected-packages
    '(epc treesit-auto yasnippet vertico use-package orderless
@@ -316,4 +372,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(fill-column-indicator ((t (:foreground "gray80" :weight normal))))
+ '(multi-magit-repo-heading ((t (:inherit magit-section-heading :box nil))))
+ '(speedbar-selected-face ((t (:foreground "#008B45" :underline t)))))
