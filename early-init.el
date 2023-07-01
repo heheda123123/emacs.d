@@ -1,3 +1,5 @@
+(setq gc-cons-percentage 0.6)
+(setq gc-cons-threshold most-positive-fixnum)
 (setq inhibit-startup-message t)
 (setq default-frame-alist
       '((menu-bar-lines . 0)
