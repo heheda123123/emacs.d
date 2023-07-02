@@ -174,9 +174,9 @@
   :ensure t
   :after (yasnippet))
 
-;; (add-to-list 'load-path "~/emacs-plugin/lsp-bridge")
-;; (require 'lsp-bridge)
-;; (global-lsp-bridge-mode)
+(add-to-list 'load-path "~/emacs-plugin/lsp-bridge")
+(require 'lsp-bridge)
+(global-lsp-bridge-mode)
 
 (add-hook 'lsp-bridge-ref-mode-hook '(lambda () (evil-emacs-state t))) ;; j/k 可以直接跳转到下一项
 ;; (add-hook 'embark-collect-mode-hook '(lambda () (evil-emacs-state t)))
