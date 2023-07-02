@@ -43,6 +43,7 @@
 (setq use-package-always-ensure t)
 (require 'use-package)
 
+
 (use-package cnfonts
   :ensure t
   :config (progn
@@ -73,9 +74,16 @@
   :ensure t
   :init (doom-modeline-mode 1))
 
-(use-package zenburn-theme
+;; (use-package zenburn-theme
+;;   :ensure t
+;;   :config (load-theme 'zenburn t)
+;;   )
+
+
+(use-package ef-themes
   :ensure t
-  :config (load-theme 'zenburn t)
+  :config
+   (ef-themes-select 'ef-duo-light)
   )
 
 (use-package recentf
@@ -104,13 +112,12 @@
   :config (vertico-mode t))
 
 (use-package orderless
-  :defer 1
   :ensure t
   :after (vertico)
   :init (setq completion-styles '(orderless)))
 
 (use-package marginalia
-  :defer 3
+  :after (vertico)
   :ensure t
   :config
   (marginalia-mode))
@@ -167,9 +174,9 @@
   :ensure t
   :after (yasnippet))
 
-(add-to-list 'load-path "~/emacs-plugin/lsp-bridge")
-(require 'lsp-bridge)
-(global-lsp-bridge-mode)
+;; (add-to-list 'load-path "~/emacs-plugin/lsp-bridge")
+;; (require 'lsp-bridge)
+;; (global-lsp-bridge-mode)
 
 (add-hook 'lsp-bridge-ref-mode-hook '(lambda () (evil-emacs-state t))) ;; j/k 可以直接跳转到下一项
 ;; (add-hook 'embark-collect-mode-hook '(lambda () (evil-emacs-state t)))
@@ -200,7 +207,6 @@
 
 ;; (add-to-list 'load-path "~/emacs-plugin/blink-search")
 ;; (require 'blink-search)
-
 
 
 (defun consult-directory-externally (file)
@@ -246,49 +252,43 @@
     (evil-mode 1)
     (setcdr evil-insert-state-map nil)
     (define-key evil-insert-state-map [escape] 'evil-normal-state)
-    (evil-set-leader 'normal (kbd ","))
-    (evil-set-leader 'normal (kbd "SPC") t)
-    (evil-define-key 'normal 'global (kbd "RET") 'open-newline-below)
-    (evil-define-key 'normal 'global (kbd "<leader>ff") 'find-file)
-    (evil-define-key 'normal 'global (kbd "<localleader>f") 'find-file)
-    (evil-define-key 'normal 'global (kbd "<leader>fc") 'my-open-current-directory)
-    (evil-define-key 'normal 'global (kbd "<leader>bb") 'switch-to-buffer)
-    (evil-define-key 'normal 'global (kbd "<localleader>b") 'switch-to-buffer)
-    (evil-define-key 'normal 'global (kbd "<leader>bk") 'kill-buffer)
-    (evil-define-key 'normal 'global (kbd "<leader>ss") 'consult-line)
-    (evil-define-key 'normal 'global (kbd "<localleader>s") 'consult-line)
-    (evil-define-key 'normal 'global (kbd "<leader>sn") 'consult-imenu)
-    (evil-define-key 'normal 'global (kbd "<leader>qq") 'consult-ripgrep)
-    (evil-define-key 'normal 'global (kbd "<localleader>q") 'consult-ripgrep)
-    (evil-define-key 'normal 'global (kbd "<leader>rr") 'consult-recent-file)
-    (evil-define-key 'normal 'global (kbd "<localleader>r") 'consult-recent-file)
-    (evil-define-key 'normal 'global (kbd "<leader>hf") 'helpful-callable)
-    (evil-define-key 'normal 'global (kbd "<leader>hv") 'helpful-variable)
-    (evil-define-key 'normal 'global (kbd "<leader>hk") 'helpful-key)
-    (evil-define-key 'normal 'global (kbd "<leader>ha") 'counsel-apropos)
-    (evil-define-key 'normal 'global (kbd "<localleader>a") 'counsel-apropos)
-    (evil-define-key 'normal 'global (kbd "<leader>hb") 'embark-bindings)
-    (evil-define-key 'normal 'global (kbd "<leader>pp") 'projectile-switch-project)
-    (evil-define-key 'normal 'global (kbd "<localleader>p") 'projectile-switch-project)
-    (evil-define-key 'normal 'global (kbd "<leader>pb") 'projectile-switch-to-buffer)
-    (evil-define-key 'normal 'global (kbd "<leader>pf") 'projectile-find-file)
-    (evil-define-key 'normal 'global (kbd "<leader>pr") 'projectile-ripgrep)
-    (evil-define-key 'normal 'global (kbd "<leader>dd") 'dirvish)
-    (evil-define-key 'normal 'global (kbd "<localleader>1") 'winum-select-window-1)
-    (evil-define-key 'normal 'global (kbd "<localleader>2") 'winum-select-window-2)
-    (evil-define-key 'normal 'global (kbd "<localleader>3") 'winum-select-window-3)
-    (evil-define-key 'normal 'global (kbd "<localleader>4") 'winum-select-window-4)
-    (evil-define-key 'normal 'global (kbd "<localleader>0") 'delete-other-windows)
-    (evil-define-key 'normal 'global (kbd "<localleader>/") 'split-window-right)
-    (evil-define-key 'normal 'global (kbd "<localleader>-") 'split-window-below)
+    (evil-set-leader '(normal visual) (kbd ","))
+    (evil-set-leader '(normal visual) (kbd "SPC") t)
+    (evil-define-key '(normal visual) 'global (kbd "RET") 'open-newline-below)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>ff") 'find-file)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>fc") 'my-open-current-directory)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>bb") 'switch-to-buffer)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>bk") 'kill-buffer)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>ss") 'consult-line)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>sn") 'consult-imenu)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>qq") 'consult-ripgrep)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>rr") 'consult-recent-file)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>hf") 'helpful-callable)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>hv") 'helpful-variable)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>hk") 'helpful-key)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>ha") 'counsel-apropos)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>hb") 'embark-bindings)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>pp") 'projectile-switch-project)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>pb") 'projectile-switch-to-buffer)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>pf") 'projectile-find-file)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>pr") 'projectile-ripgrep)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>dd") 'dirvish)
+    (evil-define-key '(normal visual) 'global (kbd "<localleader>1") 'winum-select-window-1)
+    (evil-define-key '(normal visual) 'global (kbd "<localleader>2") 'winum-select-window-2)
+    (evil-define-key '(normal visual) 'global (kbd "<localleader>3") 'winum-select-window-3)
+    (evil-define-key '(normal visual) 'global (kbd "<localleader>4") 'winum-select-window-4)
+    (evil-define-key '(normal visual) 'global (kbd "<localleader>9") 'kill-buffer-and-window)
+    (evil-define-key '(normal visual) 'global (kbd "<localleader>0") 'delete-other-windows)
+    (evil-define-key '(normal visual) 'global (kbd "<localleader>/") 'split-window-right)
+    (evil-define-key '(normal visual) 'global (kbd "<localleader>-") 'split-window-below)
+    (evil-define-key '(normal visual) 'global (kbd "<localleader>'") 'avy-goto-char-timer)
     (define-key evil-normal-state-map (kbd "gd") 'lsp-bridge-jump)
     (define-key evil-normal-state-map (kbd "C-]") 'lsp-bridge-jump)
-    (evil-define-key 'normal 'global (kbd "<leader>md") 'lsp-bridge-jump)
-    (evil-define-key 'normal 'global (kbd "<localleader>d") 'lsp-bridge-jump)
-    (evil-define-key 'normal 'global (kbd "<leader>mr") 'lsp-bridge-find-references)
-    (evil-define-key 'normal 'global (kbd "<leader>mo") 'lsp-bridge-popup-documentation)
-    (evil-define-key 'normal 'global (kbd "<leader>ma") 'lsp-bridge-diagnostic-list)
-    (evil-define-key 'normal 'global (kbd "<leader>mr") 'quickrun)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>md") 'lsp-bridge-jump)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>mr") 'lsp-bridge-find-references)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>mo") 'lsp-bridge-popup-documentation)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>ma") 'lsp-bridge-diagnostic-list)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>mr") 'quickrun)
     (evil-define-key '(normal visual) 'global "u" (lambda () (interactive) (if (not (fboundp 'vundo)) (evil-undo 1) (vundo) (vundo-backward 1))))
   ))
   
@@ -346,6 +346,67 @@
   :interpreter ("lua" . lua-mode)
   )
 
+
+(add-to-list 'load-path "~/emacs-plugin/awesome-pair") ; add awesome-pair to your load-path
+(require 'awesome-pair)
+(dolist (hook (list
+               'c-mode-common-hook
+               'c-mode-hook
+               'c++-mode-hook
+               'java-mode-hook
+               'haskell-mode-hook
+               'emacs-lisp-mode-hook
+               'lisp-interaction-mode-hook
+               'lisp-mode-hook
+               'maxima-mode-hook
+               'ielm-mode-hook
+               'sh-mode-hook
+               'makefile-gmake-mode-hook
+               'php-mode-hook
+               'python-mode-hook
+               'js-mode-hook
+               'go-mode-hook
+               'qml-mode-hook
+               'jade-mode-hook
+               'css-mode-hook
+               'ruby-mode-hook
+               'coffee-mode-hook
+               'rust-mode-hook
+               'qmake-mode-hook
+               'lua-mode-hook
+               'swift-mode-hook
+               'minibuffer-inactive-mode-hook
+               ))
+  (add-hook hook '(lambda () (awesome-pair-mode 1))))
+(define-key awesome-pair-mode-map (kbd "(") 'awesome-pair-open-round)
+(define-key awesome-pair-mode-map (kbd "[") 'awesome-pair-open-bracket)
+(define-key awesome-pair-mode-map (kbd "{") 'awesome-pair-open-curly)
+;; 写完括号里面的代码直接按右括号即可跳出括号，保证会配对
+(define-key awesome-pair-mode-map (kbd ")") 'awesome-pair-close-round)
+(define-key awesome-pair-mode-map (kbd "]") 'awesome-pair-close-bracket)
+(define-key awesome-pair-mode-map (kbd "}") 'awesome-pair-close-curly)
+(define-key awesome-pair-mode-map (kbd "=") 'awesome-pair-equal)
+;; 括号跳转
+(define-key awesome-pair-mode-map (kbd "%") 'awesome-pair-match-paren)
+(define-key awesome-pair-mode-map (kbd "\"") 'awesome-pair-double-quote)
+
+(define-key awesome-pair-mode-map (kbd "SPC") 'awesome-pair-space)
+(define-key awesome-pair-mode-map (kbd "RET") 'awesome-pair-newline)
+;; 删文本并保持括号配对
+(define-key awesome-pair-mode-map (kbd "M-o") 'awesome-pair-backward-delete)
+(define-key awesome-pair-mode-map (kbd "C-d") 'awesome-pair-forward-delete)
+(define-key awesome-pair-mode-map (kbd "C-k") 'awesome-pair-kill)
+;; 自动给当前文本加括号
+(define-key awesome-pair-mode-map (kbd "M-\"") 'awesome-pair-wrap-double-quote)
+(define-key awesome-pair-mode-map (kbd "M-[") 'awesome-pair-wrap-bracket)
+(define-key awesome-pair-mode-map (kbd "M-{") 'awesome-pair-wrap-curly)
+(define-key awesome-pair-mode-map (kbd "M-(") 'awesome-pair-wrap-round)
+;; 消括号
+(define-key awesome-pair-mode-map (kbd "M-)") 'awesome-pair-unwrap)
+;; 跳转
+(define-key awesome-pair-mode-map (kbd "M-p") 'awesome-pair-jump-right)
+(define-key awesome-pair-mode-map (kbd "M-n") 'awesome-pair-jump-left)
+(define-key awesome-pair-mode-map (kbd "M-:") 'awesome-pair-jump-out-pair-and-newline)
 
 ;; (use-package esup
 ;;   :ensure t)
