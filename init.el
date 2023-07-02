@@ -40,6 +40,8 @@
 (unless (package-installed-p 'use-package)
     (package-refresh-contents)
     (package-install 'use-package))
+(setq use-package-always-ensure t)
+(require 'use-package)
 
 (use-package cnfonts
   :ensure t
@@ -49,9 +51,23 @@
 	    (define-key cnfonts-mode-map (kbd "C-=") #'cnfonts-increase-fontsize)
 	    ))
 
-(use-package dirvish
-  :ensure t
-  :config (dirvish-override-dired-mode))
+;; (use-package dirvish
+;;   :ensure t
+;;   :config (dirvish-override-dired-mode))
+
+
+(use-package savehist
+  :ensure nil
+  :hook (after-init . savehist-mode)
+  :init (setq enable-recursive-minibuffers t ; Allow commands in minibuffers
+	      history-length 1000
+	      savehist-additional-variables '(mark-ring
+					      global-mark-ring
+					      search-ring
+					      regexp-search-ring
+					      extended-command-history)
+	      savehist-autosave-interval 300)
+  )
 
 (use-package doom-modeline
   :ensure t
@@ -63,8 +79,10 @@
   )
 
 (use-package recentf
-  :defer 1
   :ensure nil
+  :custom
+  (recentf-max-saved-items 300)
+  (recentf-auto-cleanup 'never)
   :config (recentf-mode t))
 
 (use-package helpful
@@ -82,7 +100,6 @@
   :config (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update))
 
 (use-package vertico
-  :defer 1
   :ensure t
   :config (vertico-mode t))
 
@@ -128,7 +145,9 @@
   :ensure t
   :config (winum-mode))
 
+
 (use-package which-key
+  :defer 5
   :ensure t
   :config
   (which-key-mode))
@@ -144,16 +163,23 @@
   :ensure t
   :defer 4
   :config (yas-global-mode 1))
+(use-package yasnippet-snippets
+  :ensure t
+  :after (yasnippet))
 
 (add-to-list 'load-path "~/emacs-plugin/lsp-bridge")
 (require 'lsp-bridge)
 (global-lsp-bridge-mode)
 
-(add-hook 'lsp-bridge-ref-mode-hook '(lambda () (evil-emacs-state t)))
-(add-hook 'embark-collect-mode-hook '(lambda () (evil-emacs-state t)))
-(add-hook 'helpful-mode-hook '(lambda () (evil-emacs-state t)))
+(add-hook 'lsp-bridge-ref-mode-hook '(lambda () (evil-emacs-state t))) ;; j/k 可以直接跳转到下一项
+;; (add-hook 'embark-collect-mode-hook '(lambda () (evil-emacs-state t)))
+;; (add-hook 'helpful-mode-hook '(lambda () (evil-emacs-state t)))
+;; (add-hook 'magit-mode-hook '(lambda () (evil-emacs-state t)))
+;; (add-hook 'special-mode-hook '(lambda () (evil-emacs-state t)))
+
 
 (use-package dumb-jump
+  :defer 5
   :ensure t
   :config (dumb-jump-mode t)
   )
@@ -186,17 +212,33 @@
   (consult-directory-externally default-directory))
   
 (use-package avy
+  :defer 3
   :ensure t
   :bind ("C-'" . avy-goto-char-timer))
 
 (use-package projectile
+  :ensure t
   :defer 3
   :commands (projectile-switch-project projectile-switch-to-buffer projectile-find-file)
   :config
   (projectile-mode 1)
   (define-key projectile-mode-map (kbd "C-c C-p") 'projectile-command-map))
 
+(use-package counsel
+  :defer 3
+  :ensure t
+  :commands (counsel-apropos))
+
+(use-package keycast
+  :defer 5
+  :ensure t
+  )
+
+
+
+
 (use-package evil
+  :ensure t
   :init
   (setq evil-want-C-u-scroll t)
   :config
@@ -208,23 +250,30 @@
     (evil-set-leader 'normal (kbd "SPC") t)
     (evil-define-key 'normal 'global (kbd "RET") 'open-newline-below)
     (evil-define-key 'normal 'global (kbd "<leader>ff") 'find-file)
+    (evil-define-key 'normal 'global (kbd "<localleader>f") 'find-file)
     (evil-define-key 'normal 'global (kbd "<leader>fc") 'my-open-current-directory)
     (evil-define-key 'normal 'global (kbd "<leader>bb") 'switch-to-buffer)
+    (evil-define-key 'normal 'global (kbd "<localleader>b") 'switch-to-buffer)
     (evil-define-key 'normal 'global (kbd "<leader>bk") 'kill-buffer)
     (evil-define-key 'normal 'global (kbd "<leader>ss") 'consult-line)
+    (evil-define-key 'normal 'global (kbd "<localleader>s") 'consult-line)
     (evil-define-key 'normal 'global (kbd "<leader>sn") 'consult-imenu)
     (evil-define-key 'normal 'global (kbd "<leader>qq") 'consult-ripgrep)
+    (evil-define-key 'normal 'global (kbd "<localleader>q") 'consult-ripgrep)
     (evil-define-key 'normal 'global (kbd "<leader>rr") 'consult-recent-file)
+    (evil-define-key 'normal 'global (kbd "<localleader>r") 'consult-recent-file)
     (evil-define-key 'normal 'global (kbd "<leader>hf") 'helpful-callable)
     (evil-define-key 'normal 'global (kbd "<leader>hv") 'helpful-variable)
     (evil-define-key 'normal 'global (kbd "<leader>hk") 'helpful-key)
-    (evil-define-key 'normal 'global (kbd "<leader>ha") 'apropos)
+    (evil-define-key 'normal 'global (kbd "<leader>ha") 'counsel-apropos)
+    (evil-define-key 'normal 'global (kbd "<localleader>a") 'counsel-apropos)
     (evil-define-key 'normal 'global (kbd "<leader>hb") 'embark-bindings)
     (evil-define-key 'normal 'global (kbd "<leader>pp") 'projectile-switch-project)
+    (evil-define-key 'normal 'global (kbd "<localleader>p") 'projectile-switch-project)
     (evil-define-key 'normal 'global (kbd "<leader>pb") 'projectile-switch-to-buffer)
     (evil-define-key 'normal 'global (kbd "<leader>pf") 'projectile-find-file)
     (evil-define-key 'normal 'global (kbd "<leader>pr") 'projectile-ripgrep)
-    (evil-define-key 'normal 'global (kbd "<leader>d") 'dirvish)
+    (evil-define-key 'normal 'global (kbd "<leader>dd") 'dirvish)
     (evil-define-key 'normal 'global (kbd "<localleader>1") 'winum-select-window-1)
     (evil-define-key 'normal 'global (kbd "<localleader>2") 'winum-select-window-2)
     (evil-define-key 'normal 'global (kbd "<localleader>3") 'winum-select-window-3)
@@ -235,9 +284,11 @@
     (define-key evil-normal-state-map (kbd "gd") 'lsp-bridge-jump)
     (define-key evil-normal-state-map (kbd "C-]") 'lsp-bridge-jump)
     (evil-define-key 'normal 'global (kbd "<leader>md") 'lsp-bridge-jump)
+    (evil-define-key 'normal 'global (kbd "<localleader>d") 'lsp-bridge-jump)
     (evil-define-key 'normal 'global (kbd "<leader>mr") 'lsp-bridge-find-references)
     (evil-define-key 'normal 'global (kbd "<leader>mo") 'lsp-bridge-popup-documentation)
     (evil-define-key 'normal 'global (kbd "<leader>ma") 'lsp-bridge-diagnostic-list)
+    (evil-define-key 'normal 'global (kbd "<leader>mr") 'quickrun)
     (evil-define-key '(normal visual) 'global "u" (lambda () (interactive) (if (not (fboundp 'vundo)) (evil-undo 1) (vundo) (vundo-backward 1))))
   ))
   
@@ -248,11 +299,13 @@
   :config (evilnc-default-hotkeys))
 
 (use-package evil-surround
+  :after (evil)
   :ensure t
   :config
   (global-evil-surround-mode 1))
 
 (use-package evil-escape
+  :after (evil)
   :ensure t
   :config
   (progn
@@ -262,8 +315,20 @@
     (evil-escape-mode 1)
 ))
 
-;; (use-package magit
-;;   :ensure t)
+
+(defun smart-q ()
+    "Delete window in read-only buffers, otherwise record macro."
+    (interactive)
+    (if buffer-read-only
+        (if (= 1 (count-windows))
+            (bury-buffer)
+          (delete-window))
+      (call-interactively 'evil-record-macro)))
+(define-key evil-normal-state-map (kbd "q") 'smart-q)
+
+(use-package magit
+  :commands (magit-status magit)
+  :ensure t)
 
 
 (use-package go-mode
@@ -285,6 +350,9 @@
 ;; (use-package esup
 ;;   :ensure t)
 
+(use-package quickrun
+  :commands (quickrun)
+  :ensure t)
 
 
 (defun my-cleanup-gc ()
@@ -292,7 +360,6 @@
   (setq gc-cons-threshold  67108864) ; 64M
   (setq gc-cons-percentage 0.1) ; original value
   (garbage-collect))
-
 (run-with-idle-timer 4 nil #'my-cleanup-gc)
 
 (custom-set-variables
