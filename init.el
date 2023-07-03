@@ -1,5 +1,9 @@
-
-(setq read-process-output-max (* 1024 1024)) ;; 1mb
+(setq w32-get-true-file-attributes nil   ; decrease file IO workload
+      w32-use-native-image-API t         ; use native w32 API
+      w32-pipe-read-delay 0              ; faster IPC
+      w32-pipe-buffer-size (* 64 1024))
+(setq read-process-output-max (* 1024 1024))
+(setq ffap-machine-p-known 'reject)
 (setq mouse-wheel-scroll-amount '(3 ((shift) . 1) ((control) . 10)))
 (setq mouse-wheel-progressive-speed nil)
 (delete-selection-mode 1)
@@ -38,8 +42,8 @@
 (package-initialize)
 
 (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
+  (package-refresh-contents)
+  (package-install 'use-package))
 (setq use-package-always-ensure t)
 (require 'use-package)
 
@@ -83,7 +87,7 @@
 (use-package ef-themes
   :ensure t
   :config
-   (ef-themes-select 'ef-duo-light)
+  (ef-themes-select 'ef-duo-light)
   )
 
 (use-package recentf
@@ -141,6 +145,7 @@
   (embark-collect-mode . consult-preview-at-point-mode))
 
 
+;; 多个#二次过滤，!筛选
 (use-package consult
   :defer 1
   :ensure t
@@ -174,21 +179,18 @@
   :ensure t
   :after (yasnippet))
 
+(use-package markdown-mode
+  :ensure t)
+
 (add-to-list 'load-path "~/emacs-plugin/lsp-bridge")
 (require 'lsp-bridge)
 (global-lsp-bridge-mode)
 
-(add-hook 'lsp-bridge-ref-mode-hook '(lambda () (evil-emacs-state t))) ;; j/k 可以直接跳转到下一项
-;; (add-hook 'embark-collect-mode-hook '(lambda () (evil-emacs-state t)))
-;; (add-hook 'helpful-mode-hook '(lambda () (evil-emacs-state t)))
-;; (add-hook 'magit-mode-hook '(lambda () (evil-emacs-state t)))
-;; (add-hook 'special-mode-hook '(lambda () (evil-emacs-state t)))
 
 
 (use-package dumb-jump
-  :defer 5
   :ensure t
-  :config (dumb-jump-mode t)
+  :commands (dumb-jump-go)
   )
 
 (defun lsp-bridge-jump ()
@@ -201,7 +203,7 @@
    (lsp-bridge-mode
     (lsp-bridge-find-def))
    (t
-    (require 'dumb-jump)
+    ;; (require 'dumb-jump)
     (dumb-jump-go))))
 
 
@@ -209,14 +211,17 @@
 ;; (require 'blink-search)
 
 
+(add-to-list 'load-path "~/emacs-plugin/color-rg") ; add color-rg to your load-path
+(require 'color-rg)
+
 (defun consult-directory-externally (file)
   (interactive)
   (shell-command-to-string (encode-coding-string (replace-regexp-in-string "/" "\\\\"
-	    (format "explorer.exe %s" (file-name-directory (expand-file-name file)))) 'gbk)))
+									   (format "explorer.exe %s" (file-name-directory (expand-file-name file)))) 'gbk)))
 (defun my-open-current-directory ()
   (interactive)
   (consult-directory-externally default-directory))
-  
+
 (use-package avy
   :defer 3
   :ensure t
@@ -224,14 +229,13 @@
 
 (use-package projectile
   :ensure t
-  :defer 3
   :commands (projectile-switch-project projectile-switch-to-buffer projectile-find-file)
   :config
   (projectile-mode 1)
   (define-key projectile-mode-map (kbd "C-c C-p") 'projectile-command-map))
 
+
 (use-package counsel
-  :defer 3
   :ensure t
   :commands (counsel-apropos))
 
@@ -271,7 +275,7 @@
     (evil-define-key '(normal visual) 'global (kbd "<leader>pp") 'projectile-switch-project)
     (evil-define-key '(normal visual) 'global (kbd "<leader>pb") 'projectile-switch-to-buffer)
     (evil-define-key '(normal visual) 'global (kbd "<leader>pf") 'projectile-find-file)
-    (evil-define-key '(normal visual) 'global (kbd "<leader>pr") 'projectile-ripgrep)
+    ;; (evil-define-key '(normal visual) 'global (kbd "<leader>pq") 'projectile-ripgrep)
     (evil-define-key '(normal visual) 'global (kbd "<leader>dd") 'dirvish)
     (evil-define-key '(normal visual) 'global (kbd "<localleader>1") 'winum-select-window-1)
     (evil-define-key '(normal visual) 'global (kbd "<localleader>2") 'winum-select-window-2)
@@ -290,8 +294,14 @@
     (evil-define-key '(normal visual) 'global (kbd "<leader>ma") 'lsp-bridge-diagnostic-list)
     (evil-define-key '(normal visual) 'global (kbd "<leader>mr") 'quickrun)
     (evil-define-key '(normal visual) 'global "u" (lambda () (interactive) (if (not (fboundp 'vundo)) (evil-undo 1) (vundo) (vundo-backward 1))))
-  ))
-  
+    ))
+
+
+(add-hook 'lsp-bridge-ref-mode-hook '(lambda () (evil-emacs-state))) ;; j/k 可以直接跳转到下一项
+(add-hook 'embark-collect-mode-hook '(lambda () (evil-emacs-state)))
+(add-hook 'helpful-mode-hook '(lambda () (evil-emacs-state)))
+(add-hook 'magit-mode-hook '(lambda () (evil-emacs-state)))
+(add-hook 'special-mode-hook '(lambda () (evil-emacs-state)))
 
 (use-package evil-nerd-commenter
   :after (evil)
@@ -313,17 +323,16 @@
     (setq evil-escape-excluded-major-modes '(dired-mode))
     (setq-default evil-escape-key-sequence "kj")
     (evil-escape-mode 1)
-))
-
+    ))
 
 (defun smart-q ()
-    "Delete window in read-only buffers, otherwise record macro."
-    (interactive)
-    (if buffer-read-only
-        (if (= 1 (count-windows))
-            (bury-buffer)
-          (delete-window))
-      (call-interactively 'evil-record-macro)))
+  "Delete window in read-only buffers, otherwise record macro."
+  (interactive)
+  (if buffer-read-only
+      (if (= 1 (count-windows))
+          (bury-buffer)
+        (delete-window))
+    (call-interactively 'evil-record-macro)))
 (define-key evil-normal-state-map (kbd "q") 'smart-q)
 
 (use-package magit
@@ -423,24 +432,22 @@
   (garbage-collect))
 (run-with-idle-timer 4 nil #'my-cleanup-gc)
 
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("37c8c2817010e59734fe1f9302a7e6a2b5e8cc648cf6a6cc8b85f3bf17fececf"
-     "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e"
-     default))
  '(package-selected-packages
-   '(evil-surround epc treesit-auto yasnippet vertico use-package
-		   orderless markdown-mode marginalia keycast gcmh
-		   embark-consult diminish counsel cnfonts)))
+   '(markdown-mode yasnippet-snippets winum which-key vundo vertico
+		   rust-mode quickrun projectile orderless marginalia
+		   magit lua-mode keycast helpful go-mode
+		   evil-surround evil-nerd-commenter evil-escape
+		   embark-consult elisp-demos ef-themes dumb-jump
+		   doom-modeline counsel cnfonts avy)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(fill-column-indicator ((t (:foreground "gray80" :weight normal))))
- '(multi-magit-repo-heading ((t (:inherit magit-section-heading :box nil))))
- '(speedbar-selected-face ((t (:foreground "#008B45" :underline t)))))
+ )
