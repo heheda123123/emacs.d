@@ -181,6 +181,17 @@
 (require 'lsp-bridge)
 (global-lsp-bridge-mode)
 
+(use-package counsel-etags
+  :ensure t
+  :bind (("C-]" . counsel-etags-find-tag-at-point))
+  :init
+  (add-hook 'prog-mode-hook
+        (lambda ()
+          (add-hook 'after-save-hook
+            'counsel-etags-virtual-update-tags 'append 'local)))
+  :config
+  (setq counsel-etags-update-interval 60)
+  (push "build" counsel-etags-ignore-directories))
 
 
 ;; (use-package dumb-jump
@@ -270,6 +281,7 @@
     (evil-define-key '(normal visual) 'global (kbd "<leader>pp") 'projectile-switch-project)
     (evil-define-key '(normal visual) 'global (kbd "<leader>pb") 'projectile-switch-to-buffer)
     (evil-define-key '(normal visual) 'global (kbd "<leader>pf") 'projectile-find-file)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>tt") 'counsel-etags-find-tag)
     ;; (evil-define-key '(normal visual) 'global (kbd "<leader>pq") 'projectile-ripgrep)
     (evil-define-key '(normal visual) 'global (kbd "<leader>dd") 'dirvish)
     (evil-define-key '(normal visual) 'global (kbd "<localleader>1") 'winum-select-window-1)
@@ -287,8 +299,8 @@
     (evil-define-key '(normal visual) 'global (kbd "<leader>mr") 'lsp-bridge-find-references)
     (evil-define-key '(normal visual) 'global (kbd "<leader>mo") 'lsp-bridge-popup-documentation)
     (evil-define-key '(normal visual) 'global (kbd "<leader>ma") 'lsp-bridge-diagnostic-list)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>mt") 'counsel-etags-find-tag-at-point)
     (evil-define-key '(normal visual) 'global (kbd "<leader>mb") 'quickrun)
-    (evil-define-key '(normal visual) 'global (kbd "<leader>mj") 'dumb-jump-go)
     (evil-define-key '(normal visual) 'global "u" (lambda () (interactive) (if (not (fboundp 'vundo)) (evil-undo 1) (vundo) (vundo-backward 1))))
     ))
 
@@ -322,18 +334,13 @@
     ))
 
 ;; (use-package citre
-;;   :defer t
 ;;   :ensure t
 ;;   :init
 ;;   (require 'citre-config)
-;;   (global-set-key (kbd "C-x c j") 'citre-jump)
-;;   (global-set-key (kbd "C-x c J") 'citre-jump-back)
-;;   (global-set-key (kbd "C-x c p") 'citre-ace-peek)
-;;   (global-set-key (kbd "C-x c u") 'citre-update-this-tags-file)
-;;   :config
-;;   (setq citre-project-root-function #'projectile-project-root)
 ;;   )
 
+;; (add-to-list 'load-path "~/.emacs.d")
+;; (require 'consult-citre)
 
 (defun smart-q ()
   "Delete window in read-only buffers, otherwise record macro."
