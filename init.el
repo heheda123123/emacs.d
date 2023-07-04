@@ -449,12 +449,6 @@
   :interpreter ("lua" . lua-mode)
   )
 
-;; (use-package treesit-auto
-;;   :ensure t
-;;   :demand t
-;;   :config
-;;   (setq treesit-auto-install 'prompt)
-;;   (global-treesit-auto-mode))
 
 ;; (add-to-list 'load-path "~/emacs-plugin/emacs-application-framework")
 ;; (require 'eaf)
@@ -464,6 +458,17 @@
 ;; (require 'eaf-pdf-viewer)
 ;; (require 'eaf-pyqterminal)
 
+
+;; (use-package treesit-auto
+;;   :ensure t
+;;   :demand t
+;;   :config
+;;   (setq treesit-auto-install 'prompt)
+;;   (global-treesit-auto-mode))
+
+
+;; wait replace by fingertip
+;; https://manateelazycat.github.io/2021/11/26/grammatical-edit/
 (add-to-list 'load-path "~/emacs-plugin/awesome-pair") ; add awesome-pair to your load-path
 (require 'awesome-pair)
 (dolist (hook (list
@@ -523,6 +528,8 @@
 (define-key awesome-pair-mode-map (kbd "M-n") 'awesome-pair-jump-left)
 (define-key awesome-pair-mode-map (kbd "M-:") 'awesome-pair-jump-out-pair-and-newline)
 
+
+
 ;; (use-package esup
 ;;   :ensure t)
 
@@ -550,12 +557,13 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(markdown-mode yasnippet-snippets winum which-key vundo vertico
-		   rust-mode quickrun projectile orderless marginalia
-		   magit lua-mode keycast helpful go-mode
-		   evil-surround evil-nerd-commenter evil-escape
-		   embark-consult elisp-demos ef-themes dumb-jump
-		   doom-modeline counsel cnfonts avy)))
+   '(tree-sitter-langs flycheck markdown-mode yasnippet-snippets winum
+		       which-key vundo vertico rust-mode quickrun
+		       projectile orderless marginalia magit lua-mode
+		       keycast helpful go-mode evil-surround
+		       evil-nerd-commenter evil-escape embark-consult
+		       elisp-demos ef-themes dumb-jump doom-modeline
+		       counsel cnfonts avy)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
