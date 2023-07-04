@@ -56,9 +56,10 @@
 	    (define-key cnfonts-mode-map (kbd "C-=") #'cnfonts-increase-fontsize)
 	    ))
 
-;; (use-package dirvish
-;;   :ensure t
-;;   :config (dirvish-override-dired-mode))
+(use-package dirvish
+  :commands (dirvish)
+  :ensure t
+  :config (dirvish-override-dired-mode))
 
 
 (use-package savehist
@@ -76,12 +77,7 @@
 
 (use-package doom-modeline
   :ensure t
-  :init (doom-modeline-mode 1))
-
-;; (use-package zenburn-theme
-;;   :ensure t
-;;   :config (load-theme 'zenburn t)
-;;   )
+  :config (doom-modeline-mode 1))
 
 
 (use-package ef-themes
@@ -147,7 +143,6 @@
 
 ;; 多个#二次过滤，!筛选
 (use-package consult
-  :defer 1
   :ensure t
   :bind("C-s" . consult-line)
   )
@@ -188,23 +183,23 @@
 
 
 
-(use-package dumb-jump
-  :ensure t
-  :commands (dumb-jump-go)
-  )
+;; (use-package dumb-jump
+;;   :ensure t
+;;   :commands (dumb-jump-go)
+;;   )
 
-(defun lsp-bridge-jump ()
-  (interactive)
-  (cond
-   ((eq major-mode 'emacs-lisp-mode)
-    (let ((symb (function-called-at-point)))
-      (when symb
-        (find-function symb))))
-   (lsp-bridge-mode
-    (lsp-bridge-find-def))
-   (t
-    ;; (require 'dumb-jump)
-    (dumb-jump-go))))
+;; (defun lsp-bridge-jump ()
+;;   (interactive)
+;;   (cond
+;;    ((eq major-mode 'emacs-lisp-mode)
+;;     (let ((symb (function-called-at-point)))
+;;       (when symb
+;;         (find-function symb))))
+;;    (lsp-bridge-mode
+;;     (lsp-bridge-find-def))
+;;    (t
+;;     ;; (require 'dumb-jump)
+;;     (dumb-jump-go))))
 
 
 ;; (add-to-list 'load-path "~/emacs-plugin/blink-search")
@@ -288,11 +283,12 @@
     (evil-define-key '(normal visual) 'global (kbd "<localleader>'") 'avy-goto-char-timer)
     (define-key evil-normal-state-map (kbd "gd") 'lsp-bridge-jump)
     (define-key evil-normal-state-map (kbd "C-]") 'lsp-bridge-jump)
-    (evil-define-key '(normal visual) 'global (kbd "<leader>md") 'lsp-bridge-jump)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>md") 'lsp-bridge-find-def)
     (evil-define-key '(normal visual) 'global (kbd "<leader>mr") 'lsp-bridge-find-references)
     (evil-define-key '(normal visual) 'global (kbd "<leader>mo") 'lsp-bridge-popup-documentation)
     (evil-define-key '(normal visual) 'global (kbd "<leader>ma") 'lsp-bridge-diagnostic-list)
-    (evil-define-key '(normal visual) 'global (kbd "<leader>mr") 'quickrun)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>mb") 'quickrun)
+    (evil-define-key '(normal visual) 'global (kbd "<leader>mj") 'dumb-jump-go)
     (evil-define-key '(normal visual) 'global "u" (lambda () (interactive) (if (not (fboundp 'vundo)) (evil-undo 1) (vundo) (vundo-backward 1))))
     ))
 
@@ -324,6 +320,20 @@
     (setq-default evil-escape-key-sequence "kj")
     (evil-escape-mode 1)
     ))
+
+;; (use-package citre
+;;   :defer t
+;;   :ensure t
+;;   :init
+;;   (require 'citre-config)
+;;   (global-set-key (kbd "C-x c j") 'citre-jump)
+;;   (global-set-key (kbd "C-x c J") 'citre-jump-back)
+;;   (global-set-key (kbd "C-x c p") 'citre-ace-peek)
+;;   (global-set-key (kbd "C-x c u") 'citre-update-this-tags-file)
+;;   :config
+;;   (setq citre-project-root-function #'projectile-project-root)
+;;   )
+
 
 (defun smart-q ()
   "Delete window in read-only buffers, otherwise record macro."
