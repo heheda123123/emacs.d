@@ -14,5 +14,5 @@
     (set-frame-height (selected-frame) 50))
 (xiaozhu/reset-frame-size)
 (add-hook 'after-make-frame-functions 'xiaozhu/reset-frame-size)
-
+(setq inhibit-automatic-native-compilation t)
 (global-display-line-numbers-mode)
