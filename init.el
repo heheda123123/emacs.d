@@ -1,4 +1,3 @@
-(setq inhibit-automatic-native-compilation t)
 (setq w32-get-true-file-attributes nil   ; decrease file IO workload
       w32-use-native-image-API t         ; use native w32 API
       w32-pipe-read-delay 0              ; faster IPC
