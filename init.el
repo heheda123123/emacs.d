@@ -3,6 +3,7 @@
       w32-pipe-read-delay 0              ; faster IPC
       w32-pipe-buffer-size (* 64 1024))
 (setq read-process-output-max (* 1024 1024))
+(setq confirm-kill-processes nil)
 (setq ffap-machine-p-known 'reject)
 (setq mouse-wheel-scroll-amount '(3 ((shift) . 1) ((control) . 10)))
 (setq mouse-wheel-progressive-speed nil)
@@ -61,11 +62,14 @@
   :ensure t
   :config (dirvish-override-dired-mode))
 
+(use-package so-long
+  :ensure nil
+  :config (global-so-long-mode 1))
 
 (use-package savehist
   :ensure nil
   :hook (after-init . savehist-mode)
-  :init (setq enable-recursive-minibuffers t ; Allow commands in minibuffers
+  :init (setq inable-recursive-minibuffers t ; Allow commands in minibuffers
 	      history-length 1000
 	      savehist-additional-variables '(mark-ring
 					      global-mark-ring
@@ -181,6 +185,7 @@
 (add-to-list 'load-path "~/emacs-plugin/lsp-bridge")
 (require 'lsp-bridge)
 (setq acm-enable-doc nil)
+
 (global-lsp-bridge-mode)
 
 (add-to-list 'load-path "~/emacs-plugin/auto-save") ; add auto-save to your load-path
@@ -212,6 +217,7 @@
   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
   )
 
+
 ;; (defun lsp-bridge-jump ()
 ;;   (interactive)
 ;;   (cond
@@ -226,8 +232,8 @@
 ;;     (dumb-jump-go))))
 
 
-;; (add-to-list 'load-path "~/emacs-plugin/blink-search")
-;; (require 'blink-search)
+(add-to-list 'load-path "~/emacs-plugin/blink-search")
+(require 'blink-search)
 
 
 ;; (add-to-list 'load-path "~/emacs-plugin/color-rg") ; add color-rg to your load-path
@@ -241,6 +247,7 @@
   (interactive)
   (consult-directory-externally default-directory))
 
+; 选中后按?还有其他功能
 (use-package avy
   :defer 3
   :ensure t
@@ -252,6 +259,7 @@
   :config
   (projectile-mode 1)
   (define-key projectile-mode-map (kbd "C-c C-p") 'projectile-command-map))
+
 
 
 (use-package counsel
@@ -275,6 +283,7 @@
     (define-key evil-insert-state-map [escape] 'evil-normal-state)
     (evil-set-leader '(normal visual motion) (kbd ","))
     (evil-set-leader '(normal visual motion) (kbd "SPC") t)
+    (setq evil-move-beyond-eol t)
     (evil-define-key '(normal visual motion) 'global (kbd "RET") 'open-newline-below)
     ;; file
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>ff") 'find-file)
@@ -296,6 +305,7 @@
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>hk") 'helpful-key)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>ha") 'counsel-apropos)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>hb") 'embark-bindings)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>hs") 'shortdoc)
     ;; project
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>pp") 'projectile-switch-project)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>pb") 'projectile-switch-to-buffer)
@@ -329,10 +339,13 @@
     (evil-define-key '(normal visual motion) 'global "n" 'evil-backward-paragraph)
     (evil-define-key '(normal visual motion) 'global "m" 'evil-forward-paragraph)
     (define-key evil-normal-state-map (kbd "<tab>") 'evil-switch-to-windows-last-buffer)
-
+    ;; (add-to-list 'evil-normal-state-entry-hook #'acm-hide)
     ))
 
-
+(define-key lisp-interaction-mode-map (kbd "M-q") 'nil)
+;; (global-set-key (kbd "s-f") 'find-file)
+;; (global-set-key (kbd "M-q bb") 'switch-to-buffer)
+;; (global-set-key (kbd "M-q bb") 'switch-to-buffer)
 
 (use-package evil-nerd-commenter
   :after (evil)
@@ -360,6 +373,10 @@
     (evil-escape-mode 1)
     ))
 
+(use-package rainbow-delimiters
+  :ensure t
+  :hook (prog-mode . rainbow-delimiters-mode))
+
 (use-package shackle
   :ensure t
   :hook (after-init . shackle-mode)
@@ -371,7 +388,7 @@
 	  ;; (compilation-mode              :ignore t)
           ;; ("\\*Async Shell.*\\*" :regexp t :ignore t)
           ;; ("*eshell*"                    :select t                          :size 0.4  :align t     :popup t)
-          ;; (helpful-mode                  :select t                          :size 0.6  :align right :popup t)
+          (help-mode                  :select t)
           ;; ("*Messages*"                  :select t                          :size 0.4  :align t     :popup t)
           ;; (magit-status-mode             :select t   :inhibit-window-quit t                         :same t)
           ;; (magit-log-mode                :select t   :inhibit-window-quit t                         :same t)
@@ -557,13 +574,13 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(tree-sitter-langs flycheck markdown-mode yasnippet-snippets winum
-		       which-key vundo vertico rust-mode quickrun
-		       projectile orderless marginalia magit lua-mode
-		       keycast helpful go-mode evil-surround
-		       evil-nerd-commenter evil-escape embark-consult
-		       elisp-demos ef-themes dumb-jump doom-modeline
-		       counsel cnfonts avy)))
+   '(elisp-benchmarks tree-sitter-langs flycheck markdown-mode
+		      yasnippet-snippets winum which-key vundo vertico
+		      rust-mode quickrun projectile orderless
+		      marginalia magit lua-mode keycast helpful
+		      go-mode evil-surround evil-nerd-commenter
+		      evil-escape embark-consult elisp-demos ef-themes
+		      dumb-jump doom-modeline counsel cnfonts avy)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
