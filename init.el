@@ -185,7 +185,6 @@
 (add-to-list 'load-path "~/emacs-plugin/lsp-bridge")
 (require 'lsp-bridge)
 (setq acm-enable-doc nil)
-
 (global-lsp-bridge-mode)
 
 (add-to-list 'load-path "~/emacs-plugin/auto-save") ; add auto-save to your load-path
@@ -218,22 +217,11 @@
   )
 
 
-;; (defun lsp-bridge-jump ()
-;;   (interactive)
-;;   (cond
-;;    ((eq major-mode 'emacs-lisp-mode)
-;;     (let ((symb (function-called-at-point)))
-;;       (when symb
-;;         (find-function symb))))
-;;    (lsp-bridge-mode
-;;     (lsp-bridge-find-def))
-;;    (t
-;;     ;; (require 'dumb-jump)
-;;     (dumb-jump-go))))
-
-
 (add-to-list 'load-path "~/emacs-plugin/blink-search")
-(require 'blink-search)
+;; (require 'blink-search)
+(use-package blink-search
+  :ensure nil
+  :commands (blink-search))
 
 
 ;; (add-to-list 'load-path "~/emacs-plugin/color-rg") ; add color-rg to your load-path
@@ -295,7 +283,9 @@
     ;; bookmark
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>ba") 'consult-bookmark)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>bd") 'bookmark-delete)
+    ;;
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>ss") 'consult-line)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>sa") 'blink-search)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>sn") 'consult-imenu)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>qq") 'consult-ripgrep)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>rr") 'consult-recent-file)
@@ -304,6 +294,7 @@
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>hv") 'helpful-variable)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>hk") 'helpful-key)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>ha") 'counsel-apropos)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>hi") 'counsel-info)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>hb") 'embark-bindings)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>hs") 'shortdoc)
     ;; project
@@ -355,6 +346,8 @@
 ;; (use-package evil-quickscope
 ;;   :ensure t
 ;;   :config (global-evil-quickscope-always-mode 1))
+
+
 
 (use-package evil-surround
   :after (evil)
@@ -467,15 +460,6 @@
   )
 
 
-;; (add-to-list 'load-path "~/emacs-plugin/emacs-application-framework")
-;; (require 'eaf)
-;; (require 'eaf-browser)
-;; (require 'eaf-file-manager)
-;; (require 'eaf-git)
-;; (require 'eaf-pdf-viewer)
-;; (require 'eaf-pyqterminal)
-
-
 ;; (use-package treesit-auto
 ;;   :ensure t
 ;;   :demand t
@@ -546,6 +530,52 @@
 (define-key awesome-pair-mode-map (kbd "M-:") 'awesome-pair-jump-out-pair-and-newline)
 
 
+(add-to-list 'load-path "~/emacs-plugin/one-key")
+(add-to-list 'load-path "~/emacs-plugin/thing-edit")
+(setq one-key-items-per-line 3)
+(require 'one-key)
+(require 'thing-edit)
+(one-key-create-menu
+ "THING-EDIT"
+ '(
+   ;; Copy.
+   (("w" . "Copy Word") . thing-copy-word)
+   (("s" . "Copy Symbol") . thing-copy-symbol)
+   (("m" . "Copy Email") . thing-copy-email)
+   (("f" . "Copy Filename") . thing-copy-filename)
+   (("u" . "Copy URL") . thing-copy-url)
+   (("x" . "Copy Sexp") . thing-copy-sexp)
+   (("g" . "Copy Page") . thing-copy-page)
+   (("t" . "Copy Sentence") . thing-copy-sentence)
+   (("o" . "Copy Whitespace") . thing-copy-whitespace)
+   (("i" . "Copy List") . thing-copy-list)
+   (("c" . "Copy Comment") . thing-copy-comment)
+   (("h" . "Copy Function") . thing-copy-defun)
+   (("p" . "Copy Parentheses") . thing-copy-parentheses)
+   (("l" . "Copy Line") . thing-copy-line)
+   (("a" . "Copy To Line Begin") . thing-copy-to-line-beginning)
+   (("e" . "Copy To Line End") . thing-copy-to-line-end)
+   ;; Cut.
+   (("W" . "Cut Word") . thing-cut-word)
+   (("S" . "Cut Symbol") . thing-cut-symbol)
+   (("M" . "Cut Email") . thing-cut-email)
+   (("F" . "Cut Filename") . thing-cut-filename)
+   (("U" . "Cut URL") . thing-cut-url)
+   (("X" . "Cut Sexp") . thing-cut-sexp)
+   (("G" . "Cut Page") . thing-cut-page)
+   (("T" . "Cut Sentence") . thing-cut-sentence)
+   (("O" . "Cut Whitespace") . thing-cut-whitespace)
+   (("I" . "Cut List") . thing-cut-list)
+   (("C" . "Cut Comment") . thing-cut-comment)
+   (("H" . "Cut Function") . thing-cut-defun)
+   (("P" . "Cut Parentheses") . thing-cut-parentheses)
+   (("L" . "Cut Line") . thing-cut-line)
+   (("A" . "Cut To Line Begin") . thing-cut-to-line-beginning)
+   (("E" . "Cut To Line End") . thing-cut-to-line-end)
+   )
+ t)
+
+(evil-define-key '(normal visual motion) 'global (kbd "<leader>e") 'one-key-menu-thing-edit)
 
 ;; (use-package esup
 ;;   :ensure t)
@@ -566,24 +596,3 @@
   (setq gc-cons-percentage 0.1) ; original value
   (garbage-collect))
 (run-with-idle-timer 4 nil #'my-cleanup-gc)
-
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(elisp-benchmarks tree-sitter-langs flycheck markdown-mode
-		      yasnippet-snippets winum which-key vundo vertico
-		      rust-mode quickrun projectile orderless
-		      marginalia magit lua-mode keycast helpful
-		      go-mode evil-surround evil-nerd-commenter
-		      evil-escape embark-consult elisp-demos ef-themes
-		      dumb-jump doom-modeline counsel cnfonts avy)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
