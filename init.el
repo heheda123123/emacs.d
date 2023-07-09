@@ -10,11 +10,7 @@
 (delete-selection-mode 1)
 (global-auto-revert-mode 1) ;; 自动加载外部修改过的文件
 
-(set-language-environment "UTF-8")
 (set-default-coding-systems 'utf-8)
-(set-keyboard-coding-system 'utf-8-unix)
-(set-terminal-coding-system 'utf-8-unix)
-
 
 (defun open-init-file ()
   (interactive)
@@ -37,9 +33,11 @@
 
 ;; 包设置
 (require 'package)
-(setq package-archives '(("gnu"    . "http://mirrors.bfsu.edu.cn/elpa/gnu/")
-                         ("nongnu" . "http://mirrors.bfsu.edu.cn/elpa/nongnu/")
-                         ("melpa"  . "http://mirrors.bfsu.edu.cn/elpa/melpa/")))
+;; (setq package-archives '(("gnu"    . "http://mirrors.bfsu.edu.cn/elpa/gnu/")
+;;                          ("nongnu" . "http://mirrors.bfsu.edu.cn/elpa/nongnu/")
+;;                          ("melpa"  . "http://mirrors.bfsu.edu.cn/elpa/melpa/")))
+(setq package-archives '(("gnu" . "https://mirrors.sjtug.sjtu.edu.cn/emacs-elpa/gnu/")
+                         ("melpa" . "https://mirrors.sjtug.sjtu.edu.cn/emacs-elpa/melpa/")))
 (package-initialize)
 
 (unless (package-installed-p 'use-package)
@@ -151,6 +149,14 @@
   :bind("C-s" . consult-line)
   )
 
+;; (use-package quelpa
+;;   :ensure t
+;;   :commands (quelpa)
+;;   :init
+;;   (setq quelpa-checkout-melpa-p nil)
+;;   (setq quelpa-update-melpa-p nil))
+
+
 (use-package winum
   :defer 1
   :ensure t
@@ -158,7 +164,6 @@
 
 
 (use-package which-key
-  :defer 5
   :ensure t
   :config
   (which-key-mode))
@@ -173,6 +178,8 @@
 (use-package yasnippet
   :defer 8
   :ensure t
+  :init
+  (setq yas-verbosity 0)
   :config (yas-global-mode t)
   )
 (use-package yasnippet-snippets
@@ -182,10 +189,29 @@
 (use-package markdown-mode
   :ensure t)
 
+
+;; (use-package citre
+;;   :ensure t
+;;   :init
+;;   (require 'citre-config)
+;;   )
+
 (add-to-list 'load-path "~/emacs-plugin/lsp-bridge")
 (require 'lsp-bridge)
 (setq acm-enable-doc nil)
 (global-lsp-bridge-mode)
+
+;; (defun lsp-bridge-jump ()
+;;   (interactive)
+;;   (cond
+;;    ((eq major-mode 'emacs-lisp-mode)
+;;     (let ((symb (function-called-at-point)))
+;;       (when symb
+;;         (find-function symb))))
+;;    (lsp-bridge-mode
+;;     (lsp-bridge-find-def))
+;;    (t
+;;     (xref-find-definitions))))
 
 (add-to-list 'load-path "~/emacs-plugin/auto-save") ; add auto-save to your load-path
 (require 'auto-save)
@@ -198,23 +224,23 @@
 	   "gpg"
 	   (file-name-extension (buffer-name)) t))))
 
-(use-package counsel-etags
-  :ensure t
-  :bind (("C-]" . counsel-etags-find-tag-at-point))
-  :init
-  (lambda ()
-    (add-hook 'after-save-hook
-              'counsel-etags-virtual-update-tags 'append 'local))
-  :config
-  (setq counsel-etags-update-interval 60)
-  (push "build" counsel-etags-ignore-directories))
+;; (use-package counsel-etags
+;;   :ensure t
+;;   :bind (("C-]" . counsel-etags-find-tag-at-point))
+;;   :init
+;;   (lambda ()
+;;     (add-hook 'after-save-hook
+;;               'counsel-etags-virtual-update-tags 'append 'local))
+;;   :config
+;;   (setq counsel-etags-update-interval 60)
+;;   (push "build" counsel-etags-ignore-directories))
 
 
-(use-package dumb-jump
-  :ensure t
-  :config
-  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
-  )
+;; (use-package dumb-jump
+;;   :ensure t
+;;   :config
+;;   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+;;   )
 
 
 (add-to-list 'load-path "~/emacs-plugin/blink-search")
@@ -259,6 +285,15 @@
   :commands (keycast-header-line-mode)
   )
 
+(defun smart-q ()
+  "Delete window in read-only buffers, otherwise record macro."
+  (interactive)
+  (if buffer-read-only
+      (if (= 1 (count-windows))
+          (bury-buffer)
+        (delete-window))
+    (call-interactively 'evil-record-macro)))
+
 
 (use-package evil
   :ensure t
@@ -297,6 +332,7 @@
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>hi") 'counsel-info)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>hb") 'embark-bindings)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>hs") 'shortdoc)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>he") 'find-function)
     ;; project
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>pp") 'projectile-switch-project)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>pb") 'projectile-switch-to-buffer)
@@ -321,17 +357,20 @@
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>mr") 'lsp-bridge-find-references)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>mo") 'lsp-bridge-popup-documentation)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>ma") 'lsp-bridge-diagnostic-list)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>mt") 'counsel-etags-find-tag-at-point)    ;; go def use counsel-etags
+    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>mt") 'counsel-etags-find-tag-at-point)    ;; go def use counsel-etags
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>mb") 'quickrun)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>ms") 'lsp-bridge-workspace-list-symbols)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>mj") 'xref-find-definitions)    ;; go def use dumb-jump
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>mf") 'lsp-bridge-code-format)
+    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>mj") 'xref-find-definitions)    ;; go def use dumb-jump
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>yy") 'consult-yank-from-kill-ring)
     (evil-define-key '(normal visual motion) 'global "u" (lambda () (interactive) (if (not (fboundp 'vundo)) (evil-undo 1) (vundo) (vundo-backward 1))))
     (evil-define-key '(normal visual motion) 'global "n" 'evil-backward-paragraph)
     (evil-define-key '(normal visual motion) 'global "m" 'evil-forward-paragraph)
     (define-key evil-normal-state-map (kbd "<tab>") 'evil-switch-to-windows-last-buffer)
-    ;; (add-to-list 'evil-normal-state-entry-hook #'acm-hide)
+    (define-key evil-normal-state-map (kbd "q") 'smart-q)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>e") 'one-key-menu-thing-edit)
     ))
+
 
 (define-key lisp-interaction-mode-map (kbd "M-q") 'nil)
 ;; (global-set-key (kbd "s-f") 'find-file)
@@ -419,21 +458,8 @@
 ;; (add-hook 'special-mode-hook '(lambda () (evil-emacs-state)))
 
 
-(defun smart-q ()
-  "Delete window in read-only buffers, otherwise record macro."
-  (interactive)
-  (if buffer-read-only
-      (if (= 1 (count-windows))
-          (bury-buffer)
-        (delete-window))
-    (call-interactively 'evil-record-macro)))
-(define-key evil-normal-state-map (kbd "q") 'smart-q)
 
-;; (use-package citre
-;;   :ensure t
-;;   :init
-;;   (require 'citre-config)
-;;   )
+
 
 ;; (add-to-list 'load-path "~/.emacs.d")
 ;; (require 'consult-citre)
@@ -575,7 +601,7 @@
    )
  t)
 
-(evil-define-key '(normal visual motion) 'global (kbd "<leader>e") 'one-key-menu-thing-edit)
+
 
 ;; (use-package esup
 ;;   :ensure t)
@@ -596,3 +622,25 @@
   (setq gc-cons-percentage 0.1) ; original value
   (garbage-collect))
 (run-with-idle-timer 4 nil #'my-cleanup-gc)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(whitespace4r zenburn-theme yasnippet-snippets winum which-key vundo
+		  vertico treesit-auto smartparens shackle rust-mode
+		  restart-emacs rainbow-delimiters quickrun
+		  projectile-ripgrep popper php-mode
+		  paredit-everywhere orderless meow markdown-mode
+		  marginalia magit lua-mode keycast helpful go-mode
+		  evil-surround evil-nerd-commenter evil-escape
+		  embark-consult elisp-demos elisp-benchmarks
+		  ef-themes dumb-jump doom-modeline dirvish
+		  counsel-etags cnfonts citre ace-window)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
