@@ -250,8 +250,8 @@
   :commands (blink-search))
 
 
-;; (add-to-list 'load-path "~/emacs-plugin/color-rg") ; add color-rg to your load-path
-;; (require 'color-rg)
+(add-to-list 'load-path "~/emacs-plugin/color-rg") ; add color-rg to your load-path
+(require 'color-rg)
 
 (defun consult-directory-externally (file)
   (interactive)
@@ -413,45 +413,37 @@
   :ensure t
   :hook (after-init . shackle-mode)
   :init
-  (setq shackle-rules
-	;; select 是否选中    inhibit-window-quit 按q时不关buffer    size 0到1之间控制屏幕比例    align 位置    other 是否复用当前frame的另一个window    popup 弹出新窗口而不是复用
-        ;; same 复用当前窗口    ignore 禁止显示窗口
-        '(
-	  ;; (compilation-mode              :ignore t)
-          ;; ("\\*Async Shell.*\\*" :regexp t :ignore t)
-          ;; ("*eshell*"                    :select t                          :size 0.4  :align t     :popup t)
-          (help-mode                  :select t)
-          ;; ("*Messages*"                  :select t                          :size 0.4  :align t     :popup t)
-          ;; (magit-status-mode             :select t   :inhibit-window-quit t                         :same t)
-          ;; (magit-log-mode                :select t   :inhibit-window-quit t                         :same t)
-          ))
+  (setq shackle-default-alignment 'right)
   )
 
 (use-package popper
   :ensure t
-  ;; :bind (("C-`"   . popper-toggle-latest)
-  ;; 	 ("M-`"   . popper-cycle)
-  ;; 	 ("C-M-`" . popper-toggle-type))
+  :bind (("C-`"   . popper-toggle-latest)
+	 ("M-`"   . popper-cycle)
+	 ("C-M-`" . popper-toggle-type))
   :init
   (setq popper-reference-buffers
         '(
 	  ;; "\\*Messages\\*"
           ;; "\\*Async Shell Command\\*"
-          ;; help-mode
-          ;; helpful-mode
+          help-mode
+          helpful-mode
+	  "^\\*helpful.*\\*$"
+	  "\\*color-rg\\*"
           ;; "^\\*eshell.*\\*$" eshell-mode ;; eshell as a popup
           ;; "^\\*shell.*\\*$"  shell-mode  ;; shell as a popup
           ;; (compilation-mode . hide)
           )
         )
   (setq popper-display-control nil)
-  :config
+  ;; :config
   (popper-mode +1)
   (popper-echo-mode +1)
   )
 
 
 (add-hook 'lsp-bridge-ref-mode-hook '(lambda () (evil-emacs-state))) ;; j/k 可以直接跳转到下一项
+(add-hook 'color-rg-mode-hook '(lambda () (evil-emacs-state))) ;; j/k 可以直接跳转到下一项
 ;; (add-hook 'embark-collect-mode-hook '(lambda () (evil-emacs-state)))
 ;; (add-hook 'helpful-mode-hook '(lambda () (evil-emacs-state)))
 ;; (add-hook 'magit-mode-hook '(lambda () (evil-emacs-state)))
