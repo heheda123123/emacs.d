@@ -314,6 +314,7 @@
     ;; buffer
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>bb") 'switch-to-buffer)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>bo") 'switch-to-buffer-other-window)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>be") (lambda () (interactive) (revert-buffer-with-coding-system 'utf-8)))
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>bk") 'kill-buffer)
     ;; bookmark
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>ba") 'consult-bookmark)
@@ -418,8 +419,8 @@
 
 (use-package popper
   :ensure t
-  :bind (("C-`"   . popper-toggle-latest)
-	 ("M-`"   . popper-cycle)
+  :bind (("M-`"   . popper-toggle-latest)
+	 ("C-`"   . popper-cycle)
 	 ("C-M-`" . popper-toggle-type))
   :init
   (setq popper-reference-buffers
@@ -432,7 +433,7 @@
 	  "\\*color-rg\\*"
           ;; "^\\*eshell.*\\*$" eshell-mode ;; eshell as a popup
           ;; "^\\*shell.*\\*$"  shell-mode  ;; shell as a popup
-          ;; (compilation-mode . hide)
+          (compilation-mode . hide)
           )
         )
   (setq popper-display-control nil)
@@ -461,6 +462,9 @@
 ;;   :commands (magit-status magit)
 ;;   :ensure t)
 
+(use-package php-mode
+  :ensure t
+  :mode ("\\.php\\'" . php-mode))
 
 (use-package go-mode
   :ensure t
