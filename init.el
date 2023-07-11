@@ -1,3 +1,7 @@
+;; 禁止minibuffer和message显示无用消息，init.el最后会恢复
+(setq message-log-max nil)
+(setq inhibit-message t)
+
 (setq w32-get-true-file-attributes nil   ; decrease file IO workload
       w32-use-native-image-API t         ; use native w32 API
       w32-pipe-read-delay 0              ; faster IPC
@@ -612,6 +616,9 @@
   :ensure t)
 
 
+(setq message-log-max 1000)
+(setq inhibit-message nil)
+
 (defun my-cleanup-gc ()
   "Clean up gc."
   (setq gc-cons-threshold  67108864) ; 64M
@@ -624,16 +631,18 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(whitespace4r zenburn-theme yasnippet-snippets winum which-key vundo
-		  vertico treesit-auto smartparens shackle rust-mode
-		  restart-emacs rainbow-delimiters quickrun
-		  projectile-ripgrep popper php-mode
-		  paredit-everywhere orderless meow markdown-mode
-		  marginalia magit lua-mode keycast helpful go-mode
-		  evil-surround evil-nerd-commenter evil-escape
-		  embark-consult elisp-demos elisp-benchmarks
-		  ef-themes dumb-jump doom-modeline dirvish
-		  counsel-etags cnfonts citre ace-window)))
+   '(flymake-elisp-config whitespace4r zenburn-theme yasnippet-snippets
+			  winum which-key vundo vertico treesit-auto
+			  smartparens shackle rust-mode restart-emacs
+			  rainbow-delimiters quickrun
+			  projectile-ripgrep popper php-mode
+			  paredit-everywhere orderless meow
+			  markdown-mode marginalia magit lua-mode
+			  keycast helpful go-mode evil-surround
+			  evil-nerd-commenter evil-escape
+			  embark-consult elisp-demos elisp-benchmarks
+			  ef-themes dumb-jump doom-modeline dirvish
+			  counsel-etags cnfonts citre ace-window)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
