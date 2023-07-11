@@ -1,7 +1,3 @@
-;; 禁止minibuffer和message显示无用消息，init.el最后会恢复
-(setq message-log-max nil)
-(setq inhibit-message t)
-
 (setq w32-get-true-file-attributes nil   ; decrease file IO workload
       w32-use-native-image-API t         ; use native w32 API
       w32-pipe-read-delay 0              ; faster IPC
@@ -614,10 +610,6 @@
 (use-package quickrun
   :commands (quickrun)
   :ensure t)
-
-
-(setq message-log-max 1000)
-(setq inhibit-message nil)
 
 (defun my-cleanup-gc ()
   "Clean up gc."
