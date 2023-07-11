@@ -210,11 +210,10 @@
 (setq acm-enable-doc nil)
 (global-lsp-bridge-mode)
 
-(add-to-list 'load-path "~/emacs-plugin/blink-search")
-;; (require 'blink-search)
-(use-package blink-search
-  :ensure nil
-  :commands (blink-search))
+;; (add-to-list 'load-path "~/emacs-plugin/blink-search")
+;; (use-package blink-search
+;;   :ensure nil
+;;   :commands (blink-search))
 
 (add-to-list 'load-path "~/emacs-plugin/auto-save") ; add auto-save to your load-path
 (require 'auto-save)
@@ -227,8 +226,8 @@
 	   "gpg"
 	   (file-name-extension (buffer-name)) t))))
 
-(add-to-list 'load-path "~/emacs-plugin/color-rg") ; add color-rg to your load-path
-(require 'color-rg)
+;; (add-to-list 'load-path "~/emacs-plugin/color-rg") ; add color-rg to your load-path
+;; (require 'color-rg)
 
 (defun consult-directory-externally (file)
   (interactive)
@@ -297,9 +296,9 @@
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>bd") 'bookmark-delete)
     ;;
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>ss") 'consult-line)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>sa") 'blink-search)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>sn") 'consult-imenu)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>qq") 'consult-ripgrep)
+    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>sa") 'blink-search)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>sn") 'consult-imenu)  ;; name
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>qq") 'consult-ripgrep) ;; query
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>rr") 'consult-recent-file)
     ;; help
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>hf") 'helpful-callable)
@@ -308,8 +307,8 @@
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>ha") 'counsel-apropos)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>hi") 'counsel-info)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>hb") 'embark-bindings)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>hs") 'shortdoc)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>he") 'find-function)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>he") 'shortdoc)  ;; example
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>hs") 'find-function)  ;; source
     ;; project
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>pp") 'projectile-switch-project)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>pb") 'projectile-switch-to-buffer)
@@ -350,6 +349,15 @@
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>tq") 'counsel-etags-grep)
     ))
 
+;; 批量替换
+(use-package wgrep
+  :ensure t
+  :bind
+  (
+   :map grep-mode-map
+   ("C-c C-w" . wgrep-change-to-wgrep-mode)
+   )
+  )
 
 (define-key lisp-interaction-mode-map (kbd "M-q") 'nil)
 ;; (global-set-key (kbd "s-f") 'find-file)
