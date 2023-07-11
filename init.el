@@ -11,6 +11,9 @@
 (global-auto-revert-mode 1) ;; 自动加载外部修改过的文件
 
 (set-default-coding-systems 'utf-8)
+(set-language-environment "UTF-8")
+(modify-coding-system-alist 'process "[cC][mM][dD][pP][rR][oO][xX][yY]" '(chinese-gbk-dos . chinese-gbk-dos))
+
 
 (defun open-init-file ()
   (interactive)
@@ -55,10 +58,10 @@
 	    (define-key cnfonts-mode-map (kbd "C-=") #'cnfonts-increase-fontsize)
 	    ))
 
-(use-package dirvish
-  :commands (dirvish)
-  :ensure t
-  :config (dirvish-override-dired-mode))
+;; (use-package dirvish
+;;   :commands (dirvish)
+;;   :ensure t
+;;   :config (dirvish-override-dired-mode))
 
 (use-package so-long
   :ensure nil
@@ -201,17 +204,31 @@
 (setq acm-enable-doc nil)
 (global-lsp-bridge-mode)
 
-;; (defun lsp-bridge-jump ()
-;;   (interactive)
-;;   (cond
-;;    ((eq major-mode 'emacs-lisp-mode)
-;;     (let ((symb (function-called-at-point)))
-;;       (when symb
-;;         (find-function symb))))
-;;    (lsp-bridge-mode
-;;     (lsp-bridge-find-def))
-;;    (t
-;;     (xref-find-definitions))))
+;; (use-package lsp-mode
+;;   :init
+;;   (setq lsp-warn-no-matched-clients t)
+;;   (setq lsp-keymap-prefix "C-c l")
+;;   :hook (
+;;          (prog-mode . lsp-deferred)
+;;          (lsp-mode . lsp-enable-which-key-integration))
+;;   :commands lsp)
+;; (use-package lsp-ui :commands lsp-ui-mode)
+;; (use-package lsp-pyright
+;;   :ensure t
+;;   :hook (python-mode . (lambda ()
+;;                           (require 'lsp-pyright)
+;;                           (lsp))))  ; or lsp-deferred
+;; (use-package company
+;;   :ensure t
+;;   :init (global-company-mode)
+;;   :config
+;;   (setq company-minimum-prefix-length 1) ; 只需敲 1 个字母就开始进行自动补全
+;;   (setq company-tooltip-align-annotations t)
+;;   (setq company-idle-delay 0.0)
+;;   (setq company-show-numbers t) ;; 给选项编号 (按快捷键 M-1、M-2 等等来进行选择).
+;;   (setq company-selection-wrap-around t)
+;;   (setq company-transformers '(company-sort-by-occurrence)))
+
 
 (add-to-list 'load-path "~/emacs-plugin/auto-save") ; add auto-save to your load-path
 (require 'auto-save)
@@ -310,11 +327,11 @@
     (evil-define-key '(normal visual motion) 'global (kbd "RET") 'open-newline-below)
     ;; file
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>ff") 'find-file)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>fc") 'my-open-current-directory)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>fo") 'my-open-current-directory)
     ;; buffer
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>bb") 'switch-to-buffer)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>bo") 'switch-to-buffer-other-window)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>be") (lambda () (interactive) (revert-buffer-with-coding-system 'utf-8)))
+    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>be") (lambda () (interactive) (revert-buffer-with-coding-system 'utf-8)))
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>bk") 'kill-buffer)
     ;; bookmark
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>ba") 'consult-bookmark)
@@ -340,7 +357,7 @@
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>pf") 'projectile-find-file)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>tt") 'counsel-etags-find-tag)    ;; list all tags
     ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>pq") 'projectile-ripgrep)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>dd") 'dirvish)
+    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>dd") 'dirvish)
     ;; window
     (evil-define-key '(normal visual motion) 'global (kbd "<localleader>1") 'winum-select-window-1)
     (evil-define-key '(normal visual motion) 'global (kbd "<localleader>2") 'winum-select-window-2)
@@ -431,6 +448,7 @@
           helpful-mode
 	  "^\\*helpful.*\\*$"
 	  "\\*color-rg\\*"
+	  "\\*Shell Command Output\\*"
           ;; "^\\*eshell.*\\*$" eshell-mode ;; eshell as a popup
           ;; "^\\*shell.*\\*$"  shell-mode  ;; shell as a popup
           (compilation-mode . hide)
@@ -451,11 +469,6 @@
 ;; (add-hook 'special-mode-hook '(lambda () (evil-emacs-state)))
 
 
-
-
-
-;; (add-to-list 'load-path "~/.emacs.d")
-;; (require 'consult-citre)
 
 
 ;; (use-package magit
