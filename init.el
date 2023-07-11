@@ -177,6 +177,11 @@
   :ensure t)
 
 
+(use-package counsel-etags
+  :ensure t
+  :commands (counsel-etags-list-tag counsel-etags-scan-code counsel-etags-grep)
+  )
+
 
 (use-package yasnippet
   :defer 8
@@ -193,42 +198,16 @@
   :ensure t)
 
 
-;; (use-package citre
-;;   :ensure t
-;;   :init
-;;   (require 'citre-config)
-;;   )
-
 (add-to-list 'load-path "~/emacs-plugin/lsp-bridge")
 (require 'lsp-bridge)
 (setq acm-enable-doc nil)
 (global-lsp-bridge-mode)
 
-;; (use-package lsp-mode
-;;   :init
-;;   (setq lsp-warn-no-matched-clients t)
-;;   (setq lsp-keymap-prefix "C-c l")
-;;   :hook (
-;;          (prog-mode . lsp-deferred)
-;;          (lsp-mode . lsp-enable-which-key-integration))
-;;   :commands lsp)
-;; (use-package lsp-ui :commands lsp-ui-mode)
-;; (use-package lsp-pyright
-;;   :ensure t
-;;   :hook (python-mode . (lambda ()
-;;                           (require 'lsp-pyright)
-;;                           (lsp))))  ; or lsp-deferred
-;; (use-package company
-;;   :ensure t
-;;   :init (global-company-mode)
-;;   :config
-;;   (setq company-minimum-prefix-length 1) ; 只需敲 1 个字母就开始进行自动补全
-;;   (setq company-tooltip-align-annotations t)
-;;   (setq company-idle-delay 0.0)
-;;   (setq company-show-numbers t) ;; 给选项编号 (按快捷键 M-1、M-2 等等来进行选择).
-;;   (setq company-selection-wrap-around t)
-;;   (setq company-transformers '(company-sort-by-occurrence)))
-
+(add-to-list 'load-path "~/emacs-plugin/blink-search")
+;; (require 'blink-search)
+(use-package blink-search
+  :ensure nil
+  :commands (blink-search))
 
 (add-to-list 'load-path "~/emacs-plugin/auto-save") ; add auto-save to your load-path
 (require 'auto-save)
@@ -240,32 +219,6 @@
 	  (string-suffix-p
 	   "gpg"
 	   (file-name-extension (buffer-name)) t))))
-
-;; (use-package counsel-etags
-;;   :ensure t
-;;   :bind (("C-]" . counsel-etags-find-tag-at-point))
-;;   :init
-;;   (lambda ()
-;;     (add-hook 'after-save-hook
-;;               'counsel-etags-virtual-update-tags 'append 'local))
-;;   :config
-;;   (setq counsel-etags-update-interval 60)
-;;   (push "build" counsel-etags-ignore-directories))
-
-
-;; (use-package dumb-jump
-;;   :ensure t
-;;   :config
-;;   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
-;;   )
-
-
-(add-to-list 'load-path "~/emacs-plugin/blink-search")
-;; (require 'blink-search)
-(use-package blink-search
-  :ensure nil
-  :commands (blink-search))
-
 
 (add-to-list 'load-path "~/emacs-plugin/color-rg") ; add color-rg to your load-path
 (require 'color-rg)
@@ -290,7 +243,6 @@
   :config
   (projectile-mode 1)
   (define-key projectile-mode-map (kbd "C-c C-p") 'projectile-command-map))
-
 
 
 (use-package counsel
@@ -355,7 +307,6 @@
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>pp") 'projectile-switch-project)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>pb") 'projectile-switch-to-buffer)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>pf") 'projectile-find-file)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>tt") 'counsel-etags-find-tag)    ;; list all tags
     ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>pq") 'projectile-ripgrep)
     ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>dd") 'dirvish)
     ;; window
@@ -368,6 +319,7 @@
     (evil-define-key '(normal visual motion) 'global (kbd "<localleader>/") 'split-window-right)
     (evil-define-key '(normal visual motion) 'global (kbd "<localleader>-") 'split-window-below)
     (evil-define-key '(normal visual motion) 'global (kbd "<localleader>'") 'avy-goto-char-timer)
+    (evil-define-key '(normal visual motion) 'global (kbd "<localleader>h") 'auto-highlight-symbol-mode)
     ;; lsp
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>md") 'lsp-bridge-find-def)    ;; go def use lsp-bridge
     (define-key evil-normal-state-map (kbd "gd") 'lsp-bridge-find-def)
@@ -375,7 +327,6 @@
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>mr") 'lsp-bridge-find-references)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>mo") 'lsp-bridge-popup-documentation)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>ma") 'lsp-bridge-diagnostic-list)
-    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>mt") 'counsel-etags-find-tag-at-point)    ;; go def use counsel-etags
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>mb") 'quickrun)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>ms") 'lsp-bridge-workspace-list-symbols)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>mf") 'lsp-bridge-code-format)
@@ -387,6 +338,9 @@
     (define-key evil-normal-state-map (kbd "<tab>") 'evil-switch-to-windows-last-buffer)
     (define-key evil-normal-state-map (kbd "q") 'smart-q)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>e") 'one-key-menu-thing-edit)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>tt") 'counsel-etags-list-tag)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>tg") 'counsel-etags-scan-code)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>tq") 'counsel-etags-grep)
     ))
 
 
@@ -495,16 +449,6 @@
   )
 
 
-;; (use-package treesit-auto
-;;   :ensure t
-;;   :demand t
-;;   :config
-;;   (setq treesit-auto-install 'prompt)
-;;   (global-treesit-auto-mode))
-
-
-;; wait replace by fingertip
-;; https://manateelazycat.github.io/2021/11/26/grammatical-edit/
 (add-to-list 'load-path "~/emacs-plugin/awesome-pair") ; add awesome-pair to your load-path
 (require 'awesome-pair)
 (dolist (hook (list
@@ -611,13 +555,14 @@
  t)
 
 
-
 ;; (use-package esup
 ;;   :ensure t)
 
-;; (use-package auto-highlight-symbol
-;;   :ensure t
-;;   )
+(use-package auto-highlight-symbol
+  :ensure t
+  :config (setq ahs-idle-interval 0)
+  :commands (auto-highlight-symbol-mode)
+  )
 
 
 (use-package quickrun
