@@ -171,6 +171,13 @@
   :config
   (which-key-mode))
 
+(use-package undohist
+  :ensure t
+  :init
+  (setq undohist-ignored-files '("\\.git/COMMIT_EDITMSG$"))
+  :config
+  (undohist-initialize)
+  )
 (use-package vundo
   :defer 3
   :after (evil)
