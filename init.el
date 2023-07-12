@@ -10,6 +10,7 @@
 (delete-selection-mode 1)
 (global-auto-revert-mode 1) ;; 自动加载外部修改过的文件
 
+
 (set-default-coding-systems 'utf-8)
 (set-language-environment "UTF-8")
 (modify-coding-system-alist 'process "[cC][mM][dD][pP][rR][oO][xX][yY]" '(chinese-gbk-dos . chinese-gbk-dos))
@@ -49,6 +50,7 @@
 (setq use-package-always-ensure t)
 (require 'use-package)
 
+(add-to-list 'prog-mode-hook #'hs-minor-mode)
 
 (use-package cnfonts
   :ensure t
@@ -214,6 +216,13 @@
 ;; (use-package blink-search
 ;;   :ensure nil
 ;;   :commands (blink-search))
+
+;; (add-to-list 'load-path "~/emacs-plugin/emacs-application-framework/")
+;; (require 'eaf)
+;; (require 'eaf-browser)
+;; (require 'eaf-git)
+;; (require 'eaf-pdf-viewer)
+
 
 (add-to-list 'load-path "~/emacs-plugin/auto-save") ; add auto-save to your load-path
 (require 'auto-save)
@@ -418,6 +427,7 @@
 	  "^\\*helpful.*\\*$"
 	  "\\*color-rg\\*"
 	  "\\*Shell Command Output\\*"
+	  "\\*Compile-Log\\*"
           ;; "^\\*eshell.*\\*$" eshell-mode ;; eshell as a popup
           ;; "^\\*shell.*\\*$"  shell-mode  ;; shell as a popup
           (compilation-mode . hide)
