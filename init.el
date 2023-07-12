@@ -454,9 +454,9 @@
 
 
 
-;; (use-package magit
-;;   :commands (magit-status magit)
-;;   :ensure t)
+(use-package magit
+  :commands (magit-status magit)
+  :ensure t)
 
 (use-package php-mode
   :ensure t
