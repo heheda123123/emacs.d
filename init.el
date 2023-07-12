@@ -220,8 +220,12 @@
 ;; (add-to-list 'load-path "~/emacs-plugin/emacs-application-framework/")
 ;; (require 'eaf)
 ;; (require 'eaf-browser)
+;; 使用说明 https://manateelazycat.github.io/2022/04/22/eaf-git/
 ;; (require 'eaf-git)
 ;; (require 'eaf-pdf-viewer)
+;; (setq eaf-webengine-default-zoom 1.5)
+;; (setq eaf-webengine-font-family "FiraCode NFM")
+;; (setq eaf-webengine-fixed-font-family "FiraCode NFM")
 
 
 (add-to-list 'load-path "~/emacs-plugin/auto-save") ; add auto-save to your load-path
