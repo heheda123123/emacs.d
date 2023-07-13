@@ -114,6 +114,17 @@
   :after (helpful)
   :config (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update))
 
+(use-package web-mode
+  :ensure t
+  :mode (("\\.phtml\\'" . web-mode)
+	 ("\\.tpl\\.php\\'" . web-mode)
+	 ("\\.[agj]sp\\'" . web-mode)
+	 ("\\.as[cp]x\\'" . web-mode)
+	 ("\\.erb\\'" . web-mode)
+	 ("\\.mustache\\'" . web-mode)
+	 ("\\.djhtml\\'" . web-mode)
+	 ("\\.html?\\'" . web-mode)))
+
 (use-package vertico
   :ensure t
   :config (vertico-mode t))
@@ -188,6 +199,7 @@
 
 (use-package counsel-etags
   :ensure t
+  :init (setq counsel-etags-grep-extra-arguments "-g !\"TAGS\"")
   :commands (counsel-etags-list-tag counsel-etags-scan-code counsel-etags-grep)
   )
 
@@ -298,7 +310,8 @@
     (evil-define-key '(normal visual motion) 'global (kbd "RET") 'open-newline-below)
     ;; file
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>ff") 'find-file)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>fo") 'my-open-current-directory)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>fo") 'find-file-other-window)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>fd") 'my-open-current-directory)
     ;; buffer
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>bb") 'switch-to-buffer)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>bo") 'switch-to-buffer-other-window)
@@ -326,18 +339,18 @@
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>pp") 'projectile-switch-project)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>pb") 'projectile-switch-to-buffer)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>pf") 'projectile-find-file)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>po") 'projectile-find-file-other-window)
     ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>pq") 'projectile-ripgrep)
     ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>dd") 'dirvish)
     ;; window
-    (evil-define-key '(normal visual motion) 'global (kbd "<localleader>1") 'winum-select-window-1)
-    (evil-define-key '(normal visual motion) 'global (kbd "<localleader>2") 'winum-select-window-2)
-    (evil-define-key '(normal visual motion) 'global (kbd "<localleader>3") 'winum-select-window-3)
-    (evil-define-key '(normal visual motion) 'global (kbd "<localleader>4") 'winum-select-window-4)
-    (evil-define-key '(normal visual motion) 'global (kbd "<localleader>0") 'kill-buffer-and-window)
-    (evil-define-key '(normal visual motion) 'global (kbd "<localleader>o") 'delete-other-windows)
-    (evil-define-key '(normal visual motion) 'global (kbd "<localleader>/") 'split-window-right)
-    (evil-define-key '(normal visual motion) 'global (kbd "<localleader>-") 'split-window-below)
-    (evil-define-key '(normal visual motion) 'global (kbd "<localleader>'") 'avy-goto-char-timer)
+    (evil-define-key '(normal visual motion) 'global (kbd "M-1") 'winum-select-window-1)
+    (evil-define-key '(normal visual motion) 'global (kbd "M-2") 'winum-select-window-2)
+    (evil-define-key '(normal visual motion) 'global (kbd "M-3") 'winum-select-window-3)
+    (evil-define-key '(normal visual motion) 'global (kbd "M-4") 'winum-select-window-4)
+    (evil-define-key '(normal visual motion) 'global (kbd "M-0") 'kill-buffer-and-window)
+    (evil-define-key '(normal visual motion) 'global (kbd "M-o") 'delete-other-windows)
+    (evil-define-key '(normal visual motion) 'global (kbd "M-/") 'split-window-right)
+    (evil-define-key '(normal visual motion) 'global (kbd "M--") 'split-window-below)
     (evil-define-key '(normal visual motion) 'global (kbd "<localleader>h") 'auto-highlight-symbol-mode)
     ;; lsp
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>md") 'lsp-bridge-find-def)    ;; go def use lsp-bridge
@@ -357,7 +370,8 @@
     (define-key evil-normal-state-map (kbd "<tab>") 'evil-switch-to-windows-last-buffer)
     (define-key evil-normal-state-map (kbd "q") 'smart-q)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>e") 'one-key-menu-thing-edit)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>tt") 'counsel-etags-list-tag)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>tt") 'counsel-etags-find-tag)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>tl") 'counsel-etags-list-tag)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>tg") 'counsel-etags-scan-code)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>tq") 'counsel-etags-grep)
     ))
@@ -416,36 +430,36 @@
   (setq shackle-default-alignment 'right)
   )
 
-(use-package popper
-  :ensure t
-  :bind (("M-`"   . popper-toggle-latest)
-	 ("C-`"   . popper-cycle)
-	 ("C-M-`" . popper-toggle-type))
-  :init
-  (setq popper-reference-buffers
-        '(
-	  ;; "\\*Messages\\*"
-          ;; "\\*Async Shell Command\\*"
-          help-mode
-          helpful-mode
-	  "^\\*helpful.*\\*$"
-	  "\\*color-rg\\*"
-	  "\\*Shell Command Output\\*"
-	  "\\*Compile-Log\\*"
-          ;; "^\\*eshell.*\\*$" eshell-mode ;; eshell as a popup
-          ;; "^\\*shell.*\\*$"  shell-mode  ;; shell as a popup
-          (compilation-mode . hide)
-          )
-        )
-  (setq popper-display-control nil)
-  ;; :config
-  (popper-mode +1)
-  (popper-echo-mode +1)
-  )
+;; (use-package popper
+;;   :ensure t
+;;   :bind (("M-`"   . popper-toggle-latest)
+;; 	 ("C-`"   . popper-cycle)
+;; 	 ("C-M-`" . popper-toggle-type))
+;;   :init
+;;   (setq popper-reference-buffers
+;;         '(
+;; 	  ;; "\\*Messages\\*"
+;;           ;; "\\*Async Shell Command\\*"
+;;           help-mode
+;;           helpful-mode
+;; 	  "^\\*helpful.*\\*$"
+;; 	  "\\*color-rg\\*"
+;; 	  "\\*Shell Command Output\\*"
+;; 	  "\\*Compile-Log\\*"
+;;           ;; "^\\*eshell.*\\*$" eshell-mode ;; eshell as a popup
+;;           ;; "^\\*shell.*\\*$"  shell-mode  ;; shell as a popup
+;;           (compilation-mode . hide)
+;;           )
+;;         )
+;;   (setq popper-display-control nil)
+;;   ;; :config
+;;   (popper-mode +1)
+;;   (popper-echo-mode +1)
+;;   )
 
 
 (add-hook 'lsp-bridge-ref-mode-hook '(lambda () (evil-emacs-state))) ;; j/k 可以直接跳转到下一项
-(add-hook 'color-rg-mode-hook '(lambda () (evil-emacs-state))) ;; j/k 可以直接跳转到下一项
+;; (add-hook 'color-rg-mode-hook '(lambda () (evil-emacs-state))) ;; j/k 可以直接跳转到下一项
 ;; (add-hook 'embark-collect-mode-hook '(lambda () (evil-emacs-state)))
 ;; (add-hook 'helpful-mode-hook '(lambda () (evil-emacs-state)))
 ;; (add-hook 'magit-mode-hook '(lambda () (evil-emacs-state)))
@@ -458,9 +472,9 @@
   :commands (magit-status magit)
   :ensure t)
 
-(use-package php-mode
-  :ensure t
-  :mode ("\\.php\\'" . php-mode))
+;; (use-package php-mode
+;;   :ensure t
+;;   :mode ("\\.php\\'" . php-mode))
 
 (use-package go-mode
   :ensure t
@@ -614,7 +628,7 @@
 			  winum which-key vundo vertico treesit-auto
 			  smartparens shackle rust-mode restart-emacs
 			  rainbow-delimiters quickrun
-			  projectile-ripgrep popper php-mode
+			  projectile-ripgrep popper 
 			  paredit-everywhere orderless meow
 			  markdown-mode marginalia magit lua-mode
 			  keycast helpful go-mode evil-surround
