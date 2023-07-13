@@ -232,7 +232,7 @@
 ;; (add-to-list 'load-path "~/emacs-plugin/emacs-application-framework/")
 ;; (require 'eaf)
 ;; (require 'eaf-browser)
-;; 使用说明 https://manateelazycat.github.io/2022/04/22/eaf-git/
+;; ;; 使用说明 https://manateelazycat.github.io/2022/04/22/eaf-git/
 ;; (require 'eaf-git)
 ;; (require 'eaf-pdf-viewer)
 ;; (setq eaf-webengine-default-zoom 1.5)
@@ -376,6 +376,14 @@
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>tq") 'counsel-etags-grep)
     ))
 
+;; define my text object
+(evil-define-text-object my-entire-buffer (count &optional beg end type)
+  (list (point-min) (point-max)))
+(define-key evil-outer-text-objects-map "b" 'my-entire-buffer)
+(define-key evil-inner-text-objects-map "b" 'my-entire-buffer)
+;; 让 C-o 对 consult-line 生效
+(evil-add-command-properties #'consult-line :jump t)
+
 ;; 批量替换
 (use-package wgrep
   :ensure t
@@ -472,9 +480,9 @@
   :commands (magit-status magit)
   :ensure t)
 
-;; (use-package php-mode
-;;   :ensure t
-;;   :mode ("\\.php\\'" . php-mode))
+(use-package php-mode
+  :ensure t
+  :mode ("\\.php\\'" . php-mode))
 
 (use-package go-mode
   :ensure t
@@ -628,14 +636,14 @@
 			  winum which-key vundo vertico treesit-auto
 			  smartparens shackle rust-mode restart-emacs
 			  rainbow-delimiters quickrun
-			  projectile-ripgrep popper 
-			  paredit-everywhere orderless meow
-			  markdown-mode marginalia magit lua-mode
-			  keycast helpful go-mode evil-surround
-			  evil-nerd-commenter evil-escape
-			  embark-consult elisp-demos elisp-benchmarks
-			  ef-themes dumb-jump doom-modeline dirvish
-			  counsel-etags cnfonts citre ace-window)))
+			  projectile-ripgrep popper paredit-everywhere
+			  orderless meow markdown-mode marginalia
+			  magit lua-mode keycast helpful go-mode
+			  evil-surround evil-nerd-commenter
+			  evil-escape embark-consult elisp-demos
+			  elisp-benchmarks ef-themes dumb-jump
+			  doom-modeline dirvish counsel-etags cnfonts
+			  citre ace-window)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
