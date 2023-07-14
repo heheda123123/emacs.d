@@ -65,9 +65,7 @@
 ;;   :ensure t
 ;;   :config (dirvish-override-dired-mode))
 
-(use-package so-long
-  :ensure nil
-  :config (global-so-long-mode 1))
+(global-so-long-mode 1)
 
 (use-package savehist
   :ensure nil
@@ -222,7 +220,9 @@
 
 (add-to-list 'load-path "~/emacs-plugin/lsp-bridge")
 (require 'lsp-bridge)
-(setq acm-enable-doc nil)
+(add-to-list 'lsp-bridge-multi-lang-server-extension-list '(("html") . "html_emmet"))
+(add-to-list 'lsp-bridge-multi-lang-server-extension-list '(("css") . "css_emmet"))
+;; (setq acm-enable-doc nil)
 (global-lsp-bridge-mode)
 
 ;; (add-to-list 'load-path "~/emacs-plugin/blink-search")
@@ -239,6 +239,45 @@
 ;; (setq eaf-webengine-default-zoom 1.5)
 ;; (setq eaf-webengine-font-family "FiraCode NFM")
 ;; (setq eaf-webengine-fixed-font-family "FiraCode NFM")
+
+;; (use-package lsp-mode
+;;   :init
+;;   (setq lsp-keymap-prefix "C-c l")
+;;   (setq lsp-warn-no-matched-clients nil)
+;;   (setq lsp-idle-delay 0.1)
+;;   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+;;          (prog-mode . lsp)
+;;          (lsp-mode . lsp-enable-which-key-integration))
+;;   :commands lsp)
+;; (use-package lsp-ui :commands lsp-ui-mode)
+;; (use-package lsp-pyright
+;;   :ensure t
+;;   :hook (python-mode . (lambda ()
+;;                           (require 'lsp-pyright)
+;;                           (lsp))))  ; or lsp-deferred
+;; (use-package consult-lsp
+;;   :ensure t
+;;   :config (define-key lsp-mode-map [remap xref-find-apropos] #'consult-lsp-symbols)
+;; )
+;; (use-package company
+;;   :ensure t
+;;   :init (global-company-mode)
+;;   :config
+;;   (setq company-minimum-prefix-length 1) ; 只需敲 1 个字母就开始进行自动补全
+;;   (setq company-tooltip-align-annotations t)
+;;   (setq company-idle-delay 0.0)
+;;   (setq company-show-numbers t) ;; 给选项编号 (按快捷键 M-1、M-2 等等来进行选择).
+;;   (setq company-selection-wrap-around t)
+;;   :custom
+;;   (company-transformers '(company-sort-prefer-same-case-prefix
+;; 			  company-sort-by-occurrence
+;; 			  company-sort-by-backend-importance))
+;; 	)
+
+;; 有bug
+;; (use-package consult-yasnippet
+;;   :ensure t
+;;   :commands (consult-yasnippet))
 
 
 (add-to-list 'load-path "~/emacs-plugin/auto-save") ; add auto-save to your load-path
@@ -354,15 +393,22 @@
     (evil-define-key '(normal visual motion) 'global (kbd "M--") 'split-window-below)
     (evil-define-key '(normal visual motion) 'global (kbd "<localleader>h") 'auto-highlight-symbol-mode)
     ;; lsp
+    ;; (define-key evil-normal-state-map (kbd "gd") 'lsp-bridge-find-def)
+    ;; (define-key evil-normal-state-map (kbd "C-]") 'lsp-bridge-find-def)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>mb") 'quickrun)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>md") 'lsp-bridge-find-def)    ;; go def use lsp-bridge
-    (define-key evil-normal-state-map (kbd "gd") 'lsp-bridge-find-def)
-    (define-key evil-normal-state-map (kbd "C-]") 'lsp-bridge-find-def)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>mr") 'lsp-bridge-find-references)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>mo") 'lsp-bridge-popup-documentation)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>ma") 'lsp-bridge-diagnostic-list)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>mb") 'quickrun)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>ms") 'lsp-bridge-workspace-list-symbols)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>mf") 'lsp-bridge-code-format)
+    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>md") 'xref-find-definitions)    ;; go def use lsp-bridge
+    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>mr") 'xref-find-references)
+    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>mo") 'lsp-describe-thing-at-point)
+    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>ma") 'consult-lsp-diagnostics)
+    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>ms") 'consult-lsp-file-symbols)
+    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>mf") 'lsp-format-buffer)
+    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>my") 'consult-yasnippet)
     ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>mj") 'xref-find-definitions)    ;; go def use dumb-jump
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>yy") 'consult-yank-from-kill-ring)
     (evil-define-key '(normal visual motion) 'global "u" (lambda () (interactive) (if (not (fboundp 'vundo)) (evil-undo 1) (vundo) (vundo-backward 1))))
@@ -529,6 +575,7 @@
                'lua-mode-hook
                'swift-mode-hook
                'minibuffer-inactive-mode-hook
+	       'web-mode-hook
                ))
   (add-hook hook '(lambda () (awesome-pair-mode 1))))
 (define-key awesome-pair-mode-map (kbd "(") 'awesome-pair-open-round)
@@ -542,10 +589,10 @@
 (define-key awesome-pair-mode-map (kbd "%") 'awesome-pair-match-paren)
 (define-key awesome-pair-mode-map (kbd "\"") 'awesome-pair-double-quote)
 
-(define-key awesome-pair-mode-map (kbd "SPC") 'awesome-pair-space)
-(define-key awesome-pair-mode-map (kbd "RET") 'awesome-pair-newline)
+;; (define-key awesome-pair-mode-map (kbd "SPC") 'awesome-pair-space)
+;; (define-key awesome-pair-mode-map (kbd "RET") 'awesome-pair-newline)
 
-(define-key awesome-pair-mode-map (kbd "M-o") 'awesome-pair-backward-delete)
+(define-key awesome-pair-mode-map (kbd "C-S-d") 'awesome-pair-backward-delete)
 (define-key awesome-pair-mode-map (kbd "C-d") 'awesome-pair-forward-delete)
 (define-key awesome-pair-mode-map (kbd "C-k") 'awesome-pair-kill)
 
@@ -557,7 +604,7 @@
 
 (define-key awesome-pair-mode-map (kbd "M-p") 'awesome-pair-jump-right)
 (define-key awesome-pair-mode-map (kbd "M-n") 'awesome-pair-jump-left)
-(define-key awesome-pair-mode-map (kbd "M-:") 'awesome-pair-jump-out-pair-and-newline)
+;; (define-key awesome-pair-mode-map (kbd "M-:") 'awesome-pair-jump-out-pair-and-newline)
 
 
 (add-to-list 'load-path "~/emacs-plugin/one-key")
@@ -632,18 +679,18 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(flymake-elisp-config whitespace4r zenburn-theme yasnippet-snippets
-			  winum which-key vundo vertico treesit-auto
-			  smartparens shackle rust-mode restart-emacs
-			  rainbow-delimiters quickrun
-			  projectile-ripgrep popper paredit-everywhere
-			  orderless meow markdown-mode marginalia
-			  magit lua-mode keycast helpful go-mode
-			  evil-surround evil-nerd-commenter
-			  evil-escape embark-consult elisp-demos
-			  elisp-benchmarks ef-themes dumb-jump
-			  doom-modeline dirvish counsel-etags cnfonts
-			  citre ace-window)))
+   '(consult-yasnippet consult-lsp flymake-elisp-config whitespace4r
+		       zenburn-theme yasnippet-snippets winum
+		       which-key vundo vertico treesit-auto
+		       smartparens shackle rust-mode restart-emacs
+		       rainbow-delimiters quickrun projectile-ripgrep
+		       popper paredit-everywhere orderless meow
+		       markdown-mode marginalia magit lua-mode keycast
+		       helpful go-mode evil-surround
+		       evil-nerd-commenter evil-escape embark-consult
+		       elisp-demos elisp-benchmarks ef-themes
+		       dumb-jump doom-modeline dirvish counsel-etags
+		       cnfonts citre ace-window)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
