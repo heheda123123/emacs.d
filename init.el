@@ -191,6 +191,7 @@
   :config
   (undohist-initialize)
   )
+;; evil最好以行为单位进行编辑，否则撤销时之前的内容都没了
 (use-package vundo
   :defer 3
   :after (evil)
@@ -467,11 +468,10 @@
 
 
 (add-hook 'lsp-bridge-ref-mode-hook '(lambda () (evil-emacs-state))) ;; j/k 可以直接跳转到下一项
-;; (add-hook 'color-rg-mode-hook '(lambda () (evil-emacs-state))) ;; j/k 可以直接跳转到下一项
-;; (add-hook 'embark-collect-mode-hook '(lambda () (evil-emacs-state)))
-;; (add-hook 'helpful-mode-hook '(lambda () (evil-emacs-state)))
-;; (add-hook 'magit-mode-hook '(lambda () (evil-emacs-state)))
-;; (add-hook 'special-mode-hook '(lambda () (evil-emacs-state)))
+(add-hook 'embark-collect-mode-hook '(lambda () (evil-emacs-state)))
+(add-hook 'helpful-mode-hook '(lambda () (evil-emacs-state)))
+(add-hook 'magit-mode-hook '(lambda () (evil-emacs-state)))
+(add-hook 'special-mode-hook '(lambda () (evil-emacs-state)))
 
 
 
