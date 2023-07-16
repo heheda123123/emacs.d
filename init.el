@@ -65,6 +65,9 @@
 ;;   :ensure t
 ;;   :config (dirvish-override-dired-mode))
 
+;; (setq dired-dwim-target t)
+(setq dired-listing-switches "-alh")
+
 (global-so-long-mode 1)
 
 (use-package savehist
@@ -84,6 +87,10 @@
   :ensure t
   :config (doom-modeline-mode 1))
 
+(use-package org
+  :ensure t
+  :bind ("C-c C-a" . org-agenda)
+  :config (setq org-agenda-files '("~/gtd.org")))
 
 (use-package ef-themes
   :ensure t
@@ -222,8 +229,11 @@
 (require 'lsp-bridge)
 (add-to-list 'lsp-bridge-multi-lang-server-extension-list '(("html") . "html_emmet"))
 (add-to-list 'lsp-bridge-multi-lang-server-extension-list '(("css") . "css_emmet"))
+(setq lsp-bridge-python-command "python.exe")
+(setq acm-enable-quick-access t)
 ;; (setq acm-enable-doc nil)
-(global-lsp-bridge-mode)
+;; (global-lsp-bridge-mode)
+(add-to-list 'prog-mode-hook 'lsp-bridge-mode)
 
 ;; (add-to-list 'load-path "~/emacs-plugin/blink-search")
 ;; (use-package blink-search
@@ -392,6 +402,11 @@
     (evil-define-key '(normal visual motion) 'global (kbd "M-/") 'split-window-right)
     (evil-define-key '(normal visual motion) 'global (kbd "M--") 'split-window-below)
     (evil-define-key '(normal visual motion) 'global (kbd "<localleader>h") 'auto-highlight-symbol-mode)
+    (evil-define-key '(normal visual motion) 'global (kbd "<localleader>l") 'toggle-truncate-lines)
+    ;; org mode
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>oo") 'org-agenda-list)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>oa") 'org-agenda)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>ot") #'(lambda () (interactive) (find-file "~/todo.org")))
     ;; lsp
     ;; (define-key evil-normal-state-map (kbd "gd") 'lsp-bridge-find-def)
     ;; (define-key evil-normal-state-map (kbd "C-]") 'lsp-bridge-find-def)
@@ -482,8 +497,7 @@
   :ensure t
   :hook (after-init . shackle-mode)
   :init
-  (setq shackle-default-alignment 'right)
-  )
+  (setq shackle-default-alignment 'right))
 
 ;; (use-package popper
 ;;   :ensure t
@@ -679,18 +693,16 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(consult-yasnippet consult-lsp flymake-elisp-config whitespace4r
-		       zenburn-theme yasnippet-snippets winum
-		       which-key vundo vertico treesit-auto
-		       smartparens shackle rust-mode restart-emacs
-		       rainbow-delimiters quickrun projectile-ripgrep
-		       popper paredit-everywhere orderless meow
-		       markdown-mode marginalia magit lua-mode keycast
-		       helpful go-mode evil-surround
-		       evil-nerd-commenter evil-escape embark-consult
-		       elisp-demos elisp-benchmarks ef-themes
-		       dumb-jump doom-modeline dirvish counsel-etags
-		       cnfonts citre ace-window)))
+   '(org-mode consult-yasnippet consult-lsp flymake-elisp-config
+	      whitespace4r zenburn-theme yasnippet-snippets winum
+	      which-key vundo vertico treesit-auto smartparens shackle
+	      rust-mode restart-emacs rainbow-delimiters quickrun
+	      projectile-ripgrep popper paredit-everywhere orderless
+	      meow markdown-mode marginalia magit lua-mode keycast
+	      helpful go-mode evil-surround evil-nerd-commenter
+	      evil-escape embark-consult elisp-demos elisp-benchmarks
+	      ef-themes dumb-jump doom-modeline dirvish counsel-etags
+	      cnfonts citre ace-window)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
