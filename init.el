@@ -406,7 +406,7 @@
     ;; org mode
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>oo") 'org-agenda-list)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>oa") 'org-agenda)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>ot") #'(lambda () (interactive) (find-file "~/todo.org")))
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>of") #'(lambda () (interactive) (find-file "~/todo.org")))
     ;; lsp
     ;; (define-key evil-normal-state-map (kbd "gd") 'lsp-bridge-find-def)
     ;; (define-key evil-normal-state-map (kbd "C-]") 'lsp-bridge-find-def)
