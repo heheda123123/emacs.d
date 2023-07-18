@@ -56,8 +56,8 @@
   :ensure t
   :config (progn
 	    (cnfonts-mode 1)
-	    ;; (define-key cnfonts-mode-map (kbd "C--") #'cnfonts-decrease-fontsize)
-	    ;; (define-key cnfonts-mode-map (kbd "C-=") #'cnfonts-increase-fontsize)
+	    (define-key cnfonts-mode-map (kbd "C--") #'cnfonts-decrease-fontsize)
+	    (define-key cnfonts-mode-map (kbd "C-=") #'cnfonts-increase-fontsize)
 	    ))
 
 (use-package expand-region
