@@ -229,7 +229,7 @@
 (require 'lsp-bridge)
 (add-to-list 'lsp-bridge-multi-lang-server-extension-list '(("html") . "html_emmet"))
 (add-to-list 'lsp-bridge-multi-lang-server-extension-list '(("css") . "css_emmet"))
-(setq lsp-bridge-python-command "python.exe")
+(setq lsp-bridge-python-command "python")
 (setq acm-enable-quick-access t)
 ;; (setq acm-enable-doc nil)
 ;; (global-lsp-bridge-mode)
