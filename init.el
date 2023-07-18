@@ -56,10 +56,14 @@
   :ensure t
   :config (progn
 	    (cnfonts-mode 1)
-	    (define-key cnfonts-mode-map (kbd "C--") #'cnfonts-decrease-fontsize)
-	    (define-key cnfonts-mode-map (kbd "C-=") #'cnfonts-increase-fontsize)
+	    ;; (define-key cnfonts-mode-map (kbd "C--") #'cnfonts-decrease-fontsize)
+	    ;; (define-key cnfonts-mode-map (kbd "C-=") #'cnfonts-increase-fontsize)
 	    ))
 
+(use-package expand-region
+  :ensure t
+  :commands (er/expand-region er/contract-region)
+)
 ;; (use-package dirvish
 ;;   :commands (dirvish)
 ;;   :ensure t
@@ -431,6 +435,8 @@
     (evil-define-key '(normal visual motion) 'global "m" 'evil-forward-paragraph)
     (define-key evil-normal-state-map (kbd "<tab>") 'evil-switch-to-windows-last-buffer)
     (define-key evil-normal-state-map (kbd "q") 'smart-q)
+    (define-key evil-normal-state-map (kbd "+") 'er/expand-region)
+    (define-key evil-normal-state-map (kbd "-") 'er/contract-region)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>e") 'one-key-menu-thing-edit)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>tt") 'counsel-etags-find-tag)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>tl") 'counsel-etags-list-tag)
