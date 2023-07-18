@@ -594,13 +594,13 @@
   (add-hook hook '(lambda () (awesome-pair-mode 1))))
 (define-key awesome-pair-mode-map (kbd "(") 'awesome-pair-open-round)
 (define-key awesome-pair-mode-map (kbd "[") 'awesome-pair-open-bracket)
-(define-key awesome-pair-mode-map (kbd "{") 'awesome-pair-open-curly)
+;; (define-key awesome-pair-mode-map (kbd "{") 'awesome-pair-open-curly)
 (define-key awesome-pair-mode-map (kbd ")") 'awesome-pair-close-round)
 (define-key awesome-pair-mode-map (kbd "]") 'awesome-pair-close-bracket)
 (define-key awesome-pair-mode-map (kbd "}") 'awesome-pair-close-curly)
 (define-key awesome-pair-mode-map (kbd "=") 'awesome-pair-equal)
 
-(define-key awesome-pair-mode-map (kbd "%") 'awesome-pair-match-paren)
+;; (define-key awesome-pair-mode-map (kbd "%") 'awesome-pair-match-paren)
 (define-key awesome-pair-mode-map (kbd "\"") 'awesome-pair-double-quote)
 
 ;; (define-key awesome-pair-mode-map (kbd "SPC") 'awesome-pair-space)
@@ -619,6 +619,55 @@
 (define-key awesome-pair-mode-map (kbd "M-p") 'awesome-pair-jump-right)
 (define-key awesome-pair-mode-map (kbd "M-n") 'awesome-pair-jump-left)
 ;; (define-key awesome-pair-mode-map (kbd "M-:") 'awesome-pair-jump-out-pair-and-newline)
+
+;; custom tag
+(defun awesome-pair-open-percent ()
+  (interactive)
+  (cond
+   ((derived-mode-p 'web-mode)
+    (insert "%%")
+    (backward-char))
+   (t
+    (insert "%")
+    )
+   ))
+
+(defun awesome-pair-single-quote ()
+  (interactive)
+  (cond
+   ((derived-mode-p 'emacs-lisp-mode)
+    (insert "'"))
+   (t
+    (insert "''")
+    (backward-char)
+    )
+   ))
+
+(defun awesome-pair-open-curly-my ()
+  (interactive)
+  (cond
+   ((region-active-p)
+    (awesome-pair-wrap-curly))
+   ((and (awesome-pair-in-string-p)
+         (derived-mode-p 'web-mode))
+    (insert "{}")
+    (backward-char))
+   ((or (awesome-pair-in-string-p)
+        (awesome-pair-in-comment-p))
+    (insert "{"))
+   (t
+    (cond ((derived-mode-p 'ruby-mode)
+           (insert "{  }")
+           (backward-char 2))
+          (t
+           (insert "{}")
+           (backward-char)))
+    )
+   ))
+
+(define-key awesome-pair-mode-map (kbd "{") 'awesome-pair-open-curly-my)
+(define-key awesome-pair-mode-map (kbd "%") 'awesome-pair-open-percent)
+(define-key awesome-pair-mode-map (kbd "'") 'awesome-pair-single-quote)
 
 
 (add-to-list 'load-path "~/emacs-plugin/one-key")
