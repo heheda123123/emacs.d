@@ -213,6 +213,9 @@
   :commands (counsel-etags-list-tag counsel-etags-scan-code counsel-etags-grep)
   )
 
+(use-package format-all
+  :ensure t
+  :commands (format-all-buffer))
 
 (use-package yasnippet
   :defer 8
@@ -227,7 +230,6 @@
 
 (use-package markdown-mode
   :ensure t)
-
 
 (add-to-list 'load-path "~/emacs-plugin/lsp-bridge")
 (require 'lsp-bridge)
@@ -610,7 +612,8 @@
 (define-key awesome-pair-mode-map (kbd "\"") 'awesome-pair-double-quote)
 
 ;; (define-key awesome-pair-mode-map (kbd "SPC") 'awesome-pair-space)
-;; (define-key awesome-pair-mode-map (kbd "RET") 'awesome-pair-newline)
+;; 设置之后回车只换行不补全
+(define-key awesome-pair-mode-map (kbd "RET") 'awesome-pair-newline)
 
 (define-key awesome-pair-mode-map (kbd "C-S-d") 'awesome-pair-backward-delete)
 (define-key awesome-pair-mode-map (kbd "C-d") 'awesome-pair-forward-delete)
@@ -748,16 +751,17 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(org-mode consult-yasnippet consult-lsp flymake-elisp-config
-	      whitespace4r zenburn-theme yasnippet-snippets winum
-	      which-key vundo vertico treesit-auto smartparens shackle
-	      rust-mode restart-emacs rainbow-delimiters quickrun
-	      projectile-ripgrep popper paredit-everywhere orderless
-	      meow markdown-mode marginalia magit lua-mode keycast
-	      helpful go-mode evil-surround evil-nerd-commenter
-	      evil-escape embark-consult elisp-demos elisp-benchmarks
-	      ef-themes dumb-jump doom-modeline dirvish counsel-etags
-	      cnfonts citre ace-window)))
+   '(format-all block-nav org-mode consult-yasnippet consult-lsp
+		flymake-elisp-config whitespace4r zenburn-theme
+		yasnippet-snippets winum which-key vundo vertico
+		treesit-auto smartparens shackle rust-mode
+		restart-emacs rainbow-delimiters quickrun
+		projectile-ripgrep popper paredit-everywhere orderless
+		meow markdown-mode marginalia magit lua-mode keycast
+		helpful go-mode evil-surround evil-nerd-commenter
+		evil-escape embark-consult elisp-demos
+		elisp-benchmarks ef-themes dumb-jump doom-modeline
+		dirvish counsel-etags cnfonts citre ace-window)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
