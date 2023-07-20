@@ -231,10 +231,6 @@
 (use-package markdown-mode
   :ensure t)
 
-;; (defun lsp-bridge-get-project-path-by-filepath (filename)
-;;   (interactive)
-;;   (message "in get project")
-;;   (expand-file-name (locate-dominating-file filename ".myproject")))
 
 (setq lsp-bridge-get-project-path-by-filepath
       (lambda (filepath)
