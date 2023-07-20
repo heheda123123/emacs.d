@@ -231,6 +231,17 @@
 (use-package markdown-mode
   :ensure t)
 
+;; (defun lsp-bridge-get-project-path-by-filepath (filename)
+;;   (interactive)
+;;   (message "in get project")
+;;   (expand-file-name (locate-dominating-file filename ".myproject")))
+
+(setq lsp-bridge-get-project-path-by-filepath
+      (lambda (filepath)
+        (when (locate-dominating-file filepath ".myproject")
+	      (expand-file-name (locate-dominating-file filepath ".myproject")))))
+
+;; pip install epc orjson sexpdata six paramiko
 (add-to-list 'load-path "~/emacs-plugin/lsp-bridge")
 (require 'lsp-bridge)
 (add-to-list 'lsp-bridge-multi-lang-server-extension-list '(("html") . "html_emmet"))
@@ -536,10 +547,10 @@
 
 
 (add-hook 'lsp-bridge-ref-mode-hook '(lambda () (evil-emacs-state))) ;; j/k 可以直接跳转到下一项
-(add-hook 'embark-collect-mode-hook '(lambda () (evil-emacs-state)))
-(add-hook 'helpful-mode-hook '(lambda () (evil-emacs-state)))
+;; (add-hook 'embark-collect-mode-hook '(lambda () (evil-emacs-state)))
+;; (add-hook 'helpful-mode-hook '(lambda () (evil-emacs-state)))
 (add-hook 'magit-mode-hook '(lambda () (evil-emacs-state)))
-(add-hook 'special-mode-hook '(lambda () (evil-emacs-state)))
+;; (add-hook 'special-mode-hook '(lambda () (evil-emacs-state)))
 
 
 
@@ -609,7 +620,7 @@
 (define-key awesome-pair-mode-map (kbd "=") 'awesome-pair-equal)
 
 ;; (define-key awesome-pair-mode-map (kbd "%") 'awesome-pair-match-paren)
-(define-key awesome-pair-mode-map (kbd "\"") 'awesome-pair-double-quote)
+;; (define-key awesome-pair-mode-map (kbd "\"") 'awesome-pair-double-quote)
 
 ;; (define-key awesome-pair-mode-map (kbd "SPC") 'awesome-pair-space)
 ;; 设置之后回车只换行不补全
@@ -651,32 +662,22 @@
     (backward-char)
     )
    ))
+(defun awesome-pair-double-quote-my ()
+  (interactive)
+  (insert "\"\"")
+  (backward-char)
+  )
 
 (defun awesome-pair-open-curly-my ()
   (interactive)
-  (cond
-   ((region-active-p)
-    (awesome-pair-wrap-curly))
-   ((and (awesome-pair-in-string-p)
-         (derived-mode-p 'web-mode))
-    (insert "{}")
-    (backward-char))
-   ((or (awesome-pair-in-string-p)
-        (awesome-pair-in-comment-p))
-    (insert "{"))
-   (t
-    (cond ((derived-mode-p 'ruby-mode)
-           (insert "{  }")
-           (backward-char 2))
-          (t
-           (insert "{}")
-           (backward-char)))
-    )
-   ))
+  (insert "{}")
+  (backward-char)
+  )
 
 (define-key awesome-pair-mode-map (kbd "{") 'awesome-pair-open-curly-my)
 (define-key awesome-pair-mode-map (kbd "%") 'awesome-pair-open-percent)
 (define-key awesome-pair-mode-map (kbd "'") 'awesome-pair-single-quote)
+(define-key awesome-pair-mode-map (kbd "\"") 'awesome-pair-double-quote-my)
 
 
 (add-to-list 'load-path "~/emacs-plugin/one-key")
