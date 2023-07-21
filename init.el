@@ -136,7 +136,10 @@
 
 (use-package vertico
   :ensure t
-  :config (vertico-mode t))
+  :config
+  (vertico-mode t)
+  (define-key minibuffer-local-map (kbd "<backspace>") #'vertico-directory-up)
+)
 
 (use-package orderless
   :ensure t
