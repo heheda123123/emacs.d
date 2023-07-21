@@ -451,6 +451,8 @@
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>tl") 'counsel-etags-list-tag)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>tg") 'counsel-etags-scan-code)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>tq") 'counsel-etags-grep)
+    (evil-define-key '(normal visual motion insert) 'global (kbd "M-a") 'move-beginning-of-line)
+    (evil-define-key '(normal visual motion insert) 'global (kbd "M-e") 'move-end-of-line)
     ))
 
 ;; define my text object
@@ -653,11 +655,17 @@
   (cond
    ((derived-mode-p 'emacs-lisp-mode)
     (insert "'"))
+   ((derived-mode-p 'web-mode)
+    (insert "''")
+    (backward-char))
+   ((awesome-pair-in-string-p)
+    (insert "'"))
    (t
     (insert "''")
     (backward-char)
     )
    ))
+
 (defun awesome-pair-double-quote-my ()
   (interactive)
   (insert "\"\"")
@@ -738,10 +746,11 @@
 
 (defun my-cleanup-gc ()
   "Clean up gc."
-  (setq gc-cons-threshold  67108864) ; 64M
+  (setq gc-cons-threshold  104857600) ; 100M
   (setq gc-cons-percentage 0.1) ; original value
   (garbage-collect))
 (run-with-idle-timer 4 nil #'my-cleanup-gc)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
