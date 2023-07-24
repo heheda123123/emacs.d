@@ -138,7 +138,7 @@
   :ensure t
   :config
   (vertico-mode t)
-  (define-key minibuffer-local-map (kbd "<backspace>") #'vertico-directory-up)
+  (define-key minibuffer-local-map (kbd "M-<backspace>") #'vertico-directory-up)
 )
 
 (use-package orderless
@@ -369,6 +369,7 @@
   (progn
     (evil-mode 1)
     (setcdr evil-insert-state-map nil)
+    (define-key evil-motion-state-map [down-mouse-1] nil)
     (define-key evil-insert-state-map [escape] 'evil-normal-state)
     (evil-set-leader '(normal visual motion) (kbd ","))
     (evil-set-leader '(normal visual motion) (kbd "SPC") t)
@@ -457,6 +458,7 @@
     (evil-define-key '(normal visual motion insert) 'global (kbd "M-a") 'move-beginning-of-line)
     (evil-define-key '(normal visual motion insert) 'global (kbd "M-e") 'move-end-of-line)
     ))
+
 
 ;; define my text object
 (evil-define-text-object my-entire-buffer (count &optional beg end type)
