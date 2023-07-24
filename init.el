@@ -52,12 +52,14 @@
 
 (add-to-list 'prog-mode-hook #'hs-minor-mode)
 
+;; consolas + 更纱黑体 SC
 (use-package cnfonts
   :ensure t
   :config (progn
 	    (cnfonts-mode 1)
 	    (define-key cnfonts-mode-map (kbd "C--") #'cnfonts-decrease-fontsize)
 	    (define-key cnfonts-mode-map (kbd "C-=") #'cnfonts-increase-fontsize)
+	    (setq cnfonts-personal-fontnames '(() ("更纱黑体 SC" "等距更纱黑体 SC") () () ()))
 	    ))
 
 (use-package expand-region
