@@ -60,7 +60,7 @@
 
 (add-to-list 'prog-mode-hook #'hs-minor-mode)
 
-;; 11, consolas + 更纱黑体 SC
+;;  consolas:11 + 更纱黑体 SC:10.5
 (use-package cnfonts
   :ensure t
   :config (progn
@@ -488,7 +488,6 @@
   :ensure t
   :mode ("\\.go\\'" . go-mode))
 
-
 (use-package rust-mode
   :ensure t
   :mode ("\\.rs\\'" . rust-mode))
@@ -604,7 +603,6 @@
 (define-key awesome-pair-mode-map (kbd "'") 'awesome-pair-single-quote)
 (define-key awesome-pair-mode-map (kbd "\"") 'awesome-pair-double-quote-my)
 
-
 ;; (add-to-list 'load-path "~/emacs-plugin/one-key")
 ;; (add-to-list 'load-path "~/emacs-plugin/thing-edit")
 ;; (setq one-key-items-per-line 3)
@@ -650,7 +648,6 @@
 ;;    )
 ;;  t)
 
-
 ;; (use-package esup
 ;;   :ensure t)
 
@@ -659,7 +656,6 @@
   :config (setq ahs-idle-interval 0)
   :commands (auto-highlight-symbol-mode)
   )
-
 
 (use-package quickrun
   :commands (quickrun)
