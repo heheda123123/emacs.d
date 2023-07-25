@@ -4,7 +4,7 @@
 ;; 行内移动 M-a M-e f ;
 ;; 段落移动 n m %
 ;; 屏幕移动 H M L
-;; 全文移动 ,ss * gg G
+;; 全文移动 ,ss * gg G C-d C-u
 ;; 项目移动 ,qq ,md ,mr C-o C-i
 
 (setq w32-get-true-file-attributes nil   ; decrease file IO workload
