@@ -20,11 +20,9 @@
 (delete-selection-mode 1)
 (global-auto-revert-mode 1) ;; 自动加载外部修改过的文件
 
-
 (set-default-coding-systems 'utf-8)
 (set-language-environment "UTF-8")
 (modify-coding-system-alist 'process "[cC][mM][dD][pP][rR][oO][xX][yY]" '(chinese-gbk-dos . chinese-gbk-dos))
-
 
 (defun open-init-file ()
   (interactive)
@@ -76,12 +74,7 @@
   :ensure t
   :commands (er/expand-region er/contract-region)
 )
-;; (use-package dirvish
-;;   :commands (dirvish)
-;;   :ensure t
-;;   :config (dirvish-override-dired-mode))
 
-;; (setq dired-dwim-target t)
 (setq dired-listing-switches "-alh")
 
 (global-so-long-mode 1)
@@ -130,6 +123,7 @@
 	 ("C-h a" . apropos)
 	 )
   )
+
 (use-package elisp-demos
   :ensure t
   :after (helpful)
@@ -182,26 +176,16 @@
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
-
 ;; 多个#二次过滤，!筛选
 (use-package consult
   :ensure t
   :bind("C-s" . consult-line)
   )
 
-;; (use-package quelpa
-;;   :ensure t
-;;   :commands (quelpa)
-;;   :init
-;;   (setq quelpa-checkout-melpa-p nil)
-;;   (setq quelpa-update-melpa-p nil))
-
-
 (use-package winum
   :defer 1
   :ensure t
   :config (winum-mode))
-
 
 (use-package which-key
   :ensure t
@@ -215,6 +199,7 @@
   :config
   (undohist-initialize)
   )
+
 ;; evil最好以行为单位进行编辑，否则撤销时之前的内容都没了
 (use-package vundo
   :defer 3
@@ -239,13 +224,13 @@
   (setq yas-verbosity 0)
   :config (yas-global-mode t)
   )
+
 (use-package yasnippet-snippets
   :ensure t
   :after (yasnippet))
 
 (use-package markdown-mode
   :ensure t)
-
 
 (setq lsp-bridge-get-project-path-by-filepath
       (lambda (filepath)
@@ -263,61 +248,6 @@
 ;; (global-lsp-bridge-mode)
 (add-to-list 'prog-mode-hook 'lsp-bridge-mode)
 
-;; (add-to-list 'load-path "~/emacs-plugin/blink-search")
-;; (use-package blink-search
-;;   :ensure nil
-;;   :commands (blink-search))
-
-;; (add-to-list 'load-path "~/emacs-plugin/emacs-application-framework/")
-;; (require 'eaf)
-;; (require 'eaf-browser)
-;; ;; 使用说明 https://manateelazycat.github.io/2022/04/22/eaf-git/
-;; (require 'eaf-git)
-;; (require 'eaf-pdf-viewer)
-;; (setq eaf-webengine-default-zoom 1.5)
-;; (setq eaf-webengine-font-family "FiraCode NFM")
-;; (setq eaf-webengine-fixed-font-family "FiraCode NFM")
-
-;; (use-package lsp-mode
-;;   :init
-;;   (setq lsp-keymap-prefix "C-c l")
-;;   (setq lsp-warn-no-matched-clients nil)
-;;   (setq lsp-idle-delay 0.1)
-;;   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-;;          (prog-mode . lsp)
-;;          (lsp-mode . lsp-enable-which-key-integration))
-;;   :commands lsp)
-;; (use-package lsp-ui :commands lsp-ui-mode)
-;; (use-package lsp-pyright
-;;   :ensure t
-;;   :hook (python-mode . (lambda ()
-;;                           (require 'lsp-pyright)
-;;                           (lsp))))  ; or lsp-deferred
-;; (use-package consult-lsp
-;;   :ensure t
-;;   :config (define-key lsp-mode-map [remap xref-find-apropos] #'consult-lsp-symbols)
-;; )
-;; (use-package company
-;;   :ensure t
-;;   :init (global-company-mode)
-;;   :config
-;;   (setq company-minimum-prefix-length 1) ; 只需敲 1 个字母就开始进行自动补全
-;;   (setq company-tooltip-align-annotations t)
-;;   (setq company-idle-delay 0.0)
-;;   (setq company-show-numbers t) ;; 给选项编号 (按快捷键 M-1、M-2 等等来进行选择).
-;;   (setq company-selection-wrap-around t)
-;;   :custom
-;;   (company-transformers '(company-sort-prefer-same-case-prefix
-;; 			  company-sort-by-occurrence
-;; 			  company-sort-by-backend-importance))
-;; 	)
-
-;; 有bug
-;; (use-package consult-yasnippet
-;;   :ensure t
-;;   :commands (consult-yasnippet))
-
-
 (add-to-list 'load-path "~/emacs-plugin/auto-save") ; add auto-save to your load-path
 (require 'auto-save)
 (auto-save-enable)
@@ -329,8 +259,6 @@
 	   "gpg"
 	   (file-name-extension (buffer-name)) t))))
 
-;; (add-to-list 'load-path "~/emacs-plugin/color-rg") ; add color-rg to your load-path
-;; (require 'color-rg)
 
 (defun consult-directory-externally (file)
   (interactive)
@@ -340,11 +268,11 @@
   (interactive)
   (consult-directory-externally default-directory))
 
-; 选中后按?还有其他功能
-(use-package avy
-  :defer 3
-  :ensure t
-  :bind ("C-'" . avy-goto-char-timer))
+;; ; 选中后按?还有其他功能
+;; (use-package avy
+;;   :defer 3
+;;   :ensure t
+;;   :bind ("C-'" . avy-goto-char-timer))
 
 (use-package projectile
   :ensure t
@@ -371,7 +299,6 @@
           (bury-buffer)
         (delete-window))
     (call-interactively 'evil-record-macro)))
-
 
 (use-package evil
   :ensure t
@@ -437,8 +364,6 @@
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>oa") 'org-agenda)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>of") #'(lambda () (interactive) (find-file "~/todo.org")))
     ;; lsp
-    ;; (define-key evil-normal-state-map (kbd "gd") 'lsp-bridge-find-def)
-    ;; (define-key evil-normal-state-map (kbd "C-]") 'lsp-bridge-find-def)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>mb") 'quickrun)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>md") 'lsp-bridge-find-def)    ;; go def use lsp-bridge
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>mr") 'lsp-bridge-find-references)
@@ -446,14 +371,7 @@
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>ma") 'lsp-bridge-diagnostic-list)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>ms") 'lsp-bridge-workspace-list-symbols)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>mf") 'lsp-bridge-code-format)
-    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>md") 'xref-find-definitions)    ;; go def use lsp-bridge
-    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>mr") 'xref-find-references)
-    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>mo") 'lsp-describe-thing-at-point)
-    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>ma") 'consult-lsp-diagnostics)
-    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>ms") 'consult-lsp-file-symbols)
-    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>mf") 'lsp-format-buffer)
-    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>my") 'consult-yasnippet)
-    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>mj") 'xref-find-definitions)    ;; go def use dumb-jump
+    ;; misc
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>yy") 'consult-yank-from-kill-ring)
     (evil-define-key '(normal visual motion) 'global "u" (lambda () (interactive) (if (not (fboundp 'vundo)) (evil-undo 1) (vundo) (vundo-backward 1))))
     (evil-define-key '(normal visual motion) 'global "n" 'evil-backward-paragraph)
@@ -484,8 +402,6 @@
   :init
   (global-anzu-mode t))
 
-
-
 ;; define my text object
 (evil-define-text-object my-entire-buffer (count &optional beg end type)
   (list (point-min) (point-max)))
@@ -504,21 +420,12 @@
    )
   )
 
-(define-key lisp-interaction-mode-map (kbd "M-q") 'nil)
-;; (global-set-key (kbd "s-f") 'find-file)
-;; (global-set-key (kbd "M-q bb") 'switch-to-buffer)
-;; (global-set-key (kbd "M-q bb") 'switch-to-buffer)
+;; (define-key lisp-interaction-mode-map (kbd "M-q") 'nil)
 
 (use-package evil-nerd-commenter
   :after (evil)
   :ensure t
   :config (evilnc-default-hotkeys))
-
-;; (use-package evil-quickscope
-;;   :ensure t
-;;   :config (global-evil-quickscope-always-mode 1))
-
-
 
 ;; visual mode : S<textobj>
 ;; normal : ys<textobj> cs<textobj> ds<textobj>
@@ -569,8 +476,6 @@
 	   )
 	 do (evil-set-initial-state mode state))
 
-
-
 (use-package magit
   :commands (magit-status magit)
   :ensure t)
@@ -593,7 +498,6 @@
   :mode ("\\.lua\\'" . lua-mode)
   :interpreter ("lua" . lua-mode)
   )
-
 
 (add-to-list 'load-path "~/emacs-plugin/awesome-pair") ; add awesome-pair to your load-path
 (require 'awesome-pair)
@@ -654,7 +558,6 @@
 
 (define-key awesome-pair-mode-map (kbd "M-p") 'awesome-pair-jump-right)
 (define-key awesome-pair-mode-map (kbd "M-n") 'awesome-pair-jump-left)
-;; (define-key awesome-pair-mode-map (kbd "M-:") 'awesome-pair-jump-out-pair-and-newline)
 
 ;; custom tag
 (defun awesome-pair-open-percent ()
