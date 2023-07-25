@@ -462,7 +462,7 @@
     (define-key evil-normal-state-map (kbd "q") 'smart-q)
     (define-key evil-normal-state-map (kbd "+") 'er/expand-region)
     (define-key evil-normal-state-map (kbd "-") 'er/contract-region)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>e") 'one-key-menu-thing-edit)
+    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>e") 'one-key-menu-thing-edit)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>tt") 'counsel-etags-find-tag)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>tl") 'counsel-etags-list-tag)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>tg") 'counsel-etags-scan-code)
