@@ -1,7 +1,17 @@
+;; 移动总结
+;; 字符移动 h j k l
+;; 单词移动 w e b W E B
+;; 行内移动 M-a M-e f ;
+;; 段落移动 n m %
+;; 屏幕移动 H M L
+;; 全文移动 ,ss * gg G
+;; 项目移动 ,qq ,md ,mr C-o C-i
+
 (setq w32-get-true-file-attributes nil   ; decrease file IO workload
       w32-use-native-image-API t         ; use native w32 API
       w32-pipe-read-delay 0              ; faster IPC
       w32-pipe-buffer-size (* 64 1024))
+
 (setq read-process-output-max (* 1024 1024))
 (setq confirm-kill-processes nil)
 (setq ffap-machine-p-known 'reject)
@@ -410,7 +420,7 @@
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>pf") 'projectile-find-file)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>po") 'projectile-find-file-other-window)
     ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>pq") 'projectile-ripgrep)
-    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>dd") 'dirvish)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>dd") 'dired)
     ;; window
     (evil-define-key '(normal visual motion) 'global (kbd "M-1") 'winum-select-window-1)
     (evil-define-key '(normal visual motion) 'global (kbd "M-2") 'winum-select-window-2)
@@ -459,7 +469,21 @@
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>tq") 'counsel-etags-grep)
     (evil-define-key '(normal visual motion insert) 'global (kbd "M-a") 'move-beginning-of-line)
     (evil-define-key '(normal visual motion insert) 'global (kbd "M-e") 'move-end-of-line)
+
+    (evil-define-key 'normal dired-mode-map
+      (kbd "<backspace>") 'dired-up-directory
+      "`" 'my-open-current-directory
+      "o" 'dired-find-file-other-window
+      ")" 'dired-omit-mode)
     ))
+
+(use-package evil-anzu
+  :ensure t
+  :after evil
+  :diminish
+  :init
+  (global-anzu-mode t))
+
 
 
 ;; define my text object
@@ -496,22 +520,36 @@
 
 
 
+;; visual mode : S<textobj>
+;; normal : ys<textobj> cs<textobj> ds<textobj>
 (use-package evil-surround
   :after (evil)
   :ensure t
   :config
   (global-evil-surround-mode 1))
 
-(use-package evil-escape
-  :after (evil)
+;; (use-package evil-escape
+;;   :after (evil)
+;;   :ensure t
+;;   :config
+;;   (progn
+;;     (setq-default evil-escape-delay 0.3)
+;;     (setq evil-escape-excluded-major-modes '(dired-mode))
+;;     (setq-default evil-escape-key-sequence "kj")
+;;     (evil-escape-mode 1)
+;;     ))
+
+(use-package evil-snipe
   :ensure t
-  :config
-  (progn
-    (setq-default evil-escape-delay 0.3)
-    (setq evil-escape-excluded-major-modes '(dired-mode))
-    (setq-default evil-escape-key-sequence "kj")
-    (evil-escape-mode 1)
-    ))
+  :diminish
+  :init
+  (evil-snipe-mode +1)
+  (evil-snipe-override-mode +1))
+
+(use-package evil-matchit
+  :ensure
+  :init
+  (global-evil-matchit-mode 1))
 
 (use-package rainbow-delimiters
   :ensure t
@@ -523,40 +561,13 @@
   :init
   (setq shackle-default-alignment 'right))
 
-;; (use-package popper
-;;   :ensure t
-;;   :bind (("M-`"   . popper-toggle-latest)
-;; 	 ("C-`"   . popper-cycle)
-;; 	 ("C-M-`" . popper-toggle-type))
-;;   :init
-;;   (setq popper-reference-buffers
-;;         '(
-;; 	  ;; "\\*Messages\\*"
-;;           ;; "\\*Async Shell Command\\*"
-;;           help-mode
-;;           helpful-mode
-;; 	  "^\\*helpful.*\\*$"
-;; 	  "\\*color-rg\\*"
-;; 	  "\\*Shell Command Output\\*"
-;; 	  "\\*Compile-Log\\*"
-;;           ;; "^\\*eshell.*\\*$" eshell-mode ;; eshell as a popup
-;;           ;; "^\\*shell.*\\*$"  shell-mode  ;; shell as a popup
-;;           (compilation-mode . hide)
-;;           )
-;;         )
-;;   (setq popper-display-control nil)
-;;   ;; :config
-;;   (popper-mode +1)
-;;   (popper-echo-mode +1)
-;;   )
-
-
-(add-hook 'lsp-bridge-ref-mode-hook '(lambda () (evil-emacs-state))) ;; j/k 可以直接跳转到下一项
-;; (add-hook 'embark-collect-mode-hook '(lambda () (evil-emacs-state)))
-;; (add-hook 'helpful-mode-hook '(lambda () (evil-emacs-state)))
-(add-hook 'magit-mode-hook '(lambda () (evil-emacs-state)))
-;; (add-hook 'special-mode-hook '(lambda () (evil-emacs-state)))
-
+(cl-loop for (mode . state) in
+	 '((org-agenda-mode . normal)
+	   (lsp-bridge-ref-mode . emacs)
+	   (eshell-mode . emacs)
+	   (magit-mode . emacs)
+	   )
+	 do (evil-set-initial-state mode state))
 
 
 
@@ -764,17 +775,18 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(format-all block-nav org-mode consult-yasnippet consult-lsp
-		flymake-elisp-config whitespace4r zenburn-theme
-		yasnippet-snippets winum which-key vundo vertico
-		treesit-auto smartparens shackle rust-mode
-		restart-emacs rainbow-delimiters quickrun
-		projectile-ripgrep popper paredit-everywhere orderless
-		meow markdown-mode marginalia magit lua-mode keycast
-		helpful go-mode evil-surround evil-nerd-commenter
-		evil-escape embark-consult elisp-demos
-		elisp-benchmarks ef-themes dumb-jump doom-modeline
-		dirvish counsel-etags cnfonts citre ace-window)))
+   '(evil-matchit evil-snipe evil-anzu format-all block-nav org-mode
+		  consult-yasnippet consult-lsp flymake-elisp-config
+		  whitespace4r zenburn-theme yasnippet-snippets winum
+		  which-key vundo vertico treesit-auto smartparens
+		  shackle rust-mode restart-emacs rainbow-delimiters
+		  quickrun projectile-ripgrep popper
+		  paredit-everywhere orderless meow markdown-mode
+		  marginalia magit lua-mode keycast helpful go-mode
+		  evil-surround evil-nerd-commenter evil-escape
+		  embark-consult elisp-demos elisp-benchmarks
+		  ef-themes dumb-jump doom-modeline dirvish
+		  counsel-etags cnfonts citre ace-window)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
