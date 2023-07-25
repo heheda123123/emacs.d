@@ -395,6 +395,14 @@
       ")" 'dired-omit-mode)
     ))
 
+(cl-loop for (mode . state) in
+	 '((org-agenda-mode . normal)
+	   (lsp-bridge-ref-mode . emacs)
+	   (eshell-mode . emacs)
+	   (magit-mode . emacs)
+	   )
+	 do (evil-set-initial-state mode state))
+
 (use-package evil-anzu
   :ensure t
   :after evil
@@ -467,14 +475,6 @@
   :hook (after-init . shackle-mode)
   :init
   (setq shackle-default-alignment 'right))
-
-(cl-loop for (mode . state) in
-	 '((org-agenda-mode . normal)
-	   (lsp-bridge-ref-mode . emacs)
-	   (eshell-mode . emacs)
-	   (magit-mode . emacs)
-	   )
-	 do (evil-set-initial-state mode state))
 
 (use-package magit
   :commands (magit-status magit)
