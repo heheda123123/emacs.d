@@ -45,11 +45,11 @@
 
 ;; 包设置
 (require 'package)
-;; (setq package-archives '(("gnu"    . "http://mirrors.bfsu.edu.cn/elpa/gnu/")
-;;                          ("nongnu" . "http://mirrors.bfsu.edu.cn/elpa/nongnu/")
-;;                          ("melpa"  . "http://mirrors.bfsu.edu.cn/elpa/melpa/")))
-(setq package-archives '(("gnu" . "https://mirrors.sjtug.sjtu.edu.cn/emacs-elpa/gnu/")
-                         ("melpa" . "https://mirrors.sjtug.sjtu.edu.cn/emacs-elpa/melpa/")))
+(setq package-archives '(("gnu"    . "http://mirrors.bfsu.edu.cn/elpa/gnu/")
+                         ("nongnu" . "http://mirrors.bfsu.edu.cn/elpa/nongnu/")
+                         ("melpa"  . "http://mirrors.bfsu.edu.cn/elpa/melpa/")))
+;; (setq package-archives '(("gnu" . "https://mirrors.sjtug.sjtu.edu.cn/emacs-elpa/gnu/")
+;;                          ("melpa" . "https://mirrors.sjtug.sjtu.edu.cn/emacs-elpa/melpa/")))
 (package-initialize)
 
 (unless (package-installed-p 'use-package)
