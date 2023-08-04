@@ -45,11 +45,11 @@
 
 ;; 包设置
 (require 'package)
-(setq package-archives '(("gnu"    . "http://mirrors.bfsu.edu.cn/elpa/gnu/")
-                         ("nongnu" . "http://mirrors.bfsu.edu.cn/elpa/nongnu/")
-                         ("melpa"  . "http://mirrors.bfsu.edu.cn/elpa/melpa/")))
-;; (setq package-archives '(("gnu" . "https://mirrors.sjtug.sjtu.edu.cn/emacs-elpa/gnu/")
-;;                          ("melpa" . "https://mirrors.sjtug.sjtu.edu.cn/emacs-elpa/melpa/")))
+;; (setq package-archives '(("gnu"    . "http://mirrors.bfsu.edu.cn/elpa/gnu/")
+;;                          ("nongnu" . "http://mirrors.bfsu.edu.cn/elpa/nongnu/")
+;;                          ("melpa"  . "http://mirrors.bfsu.edu.cn/elpa/melpa/")))
+(setq package-archives '(("gnu" . "https://mirrors.sjtug.sjtu.edu.cn/emacs-elpa/gnu/")
+                        ("melpa" . "https://mirrors.sjtug.sjtu.edu.cn/emacs-elpa/melpa/")))
 (package-initialize)
 
 (unless (package-installed-p 'use-package)
@@ -73,7 +73,7 @@
 (use-package expand-region
   :ensure t
   :commands (er/expand-region er/contract-region)
-)
+  )
 
 (setq dired-listing-switches "-alh")
 
@@ -145,7 +145,7 @@
   :config
   (vertico-mode t)
   (define-key minibuffer-local-map (kbd "M-<backspace>") #'vertico-directory-up)
-)
+  )
 
 (use-package orderless
   :ensure t
@@ -235,7 +235,7 @@
 (setq lsp-bridge-get-project-path-by-filepath
       (lambda (filepath)
         (when (locate-dominating-file filepath ".myproject")
-	      (expand-file-name (locate-dominating-file filepath ".myproject")))))
+	  (expand-file-name (locate-dominating-file filepath ".myproject")))))
 
 ;; pip install epc orjson sexpdata six paramiko
 (add-to-list 'load-path "~/emacs-plugin/lsp-bridge")
@@ -259,7 +259,6 @@
 	   "gpg"
 	   (file-name-extension (buffer-name)) t))))
 
-
 (defun consult-directory-externally (file)
   (interactive)
   (shell-command-to-string (encode-coding-string (replace-regexp-in-string "/" "\\\\"
@@ -269,10 +268,11 @@
   (consult-directory-externally default-directory))
 
 ;; ; 选中后按?还有其他功能
-;; (use-package avy
-;;   :defer 3
-;;   :ensure t
-;;   :bind ("C-'" . avy-goto-char-timer))
+(use-package avy
+  :defer 3
+  :config (setq avy-timeout-seconds 5)
+  :ensure t
+  :bind ("C-'" . avy-goto-char-timer))
 
 (use-package projectile
   :ensure t
@@ -280,7 +280,6 @@
   :config
   (projectile-mode 1)
   (define-key projectile-mode-map (kbd "C-c C-p") 'projectile-command-map))
-
 
 (use-package counsel
   :ensure t
@@ -415,8 +414,24 @@
   (list (point-min) (point-max)))
 (define-key evil-outer-text-objects-map "b" 'my-entire-buffer)
 (define-key evil-inner-text-objects-map "b" 'my-entire-buffer)
+
 ;; 让 C-o 对 consult-line 生效
 (evil-add-command-properties #'consult-line :jump t)
+
+;; v标记区域，R启用iedit
+(use-package iedit
+  :ensure t
+  :init
+  (setq iedit-toggle-key-default nil)
+  :config
+  (define-key iedit-mode-keymap (kbd "M-f") 'iedit-restrict-function)
+  (define-key iedit-mode-keymap (kbd "M-l") 'iedit-restrict-current-line))
+
+(use-package evil-multiedit
+  :ensure t
+  :commands (evil-multiedit-default-keybinds)
+  :init
+  (evil-multiedit-default-keybinds))
 
 ;; 批量替换
 (use-package wgrep
@@ -674,18 +689,17 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(evil-matchit evil-snipe evil-anzu format-all block-nav org-mode
-		  consult-yasnippet consult-lsp flymake-elisp-config
-		  whitespace4r zenburn-theme yasnippet-snippets winum
-		  which-key vundo vertico treesit-auto smartparens
-		  shackle rust-mode restart-emacs rainbow-delimiters
-		  quickrun projectile-ripgrep popper
-		  paredit-everywhere orderless meow markdown-mode
-		  marginalia magit lua-mode keycast helpful go-mode
-		  evil-surround evil-nerd-commenter evil-escape
-		  embark-consult elisp-demos elisp-benchmarks
-		  ef-themes dumb-jump doom-modeline dirvish
-		  counsel-etags cnfonts citre ace-window)))
+   '(avy evil-multiedit iedit evil-matchit evil-snipe evil-anzu
+	 format-all block-nav org-mode consult-yasnippet consult-lsp
+	 flymake-elisp-config whitespace4r zenburn-theme
+	 yasnippet-snippets winum which-key vundo vertico treesit-auto
+	 smartparens shackle rust-mode restart-emacs
+	 rainbow-delimiters quickrun projectile-ripgrep popper
+	 paredit-everywhere orderless meow markdown-mode marginalia
+	 magit lua-mode keycast helpful go-mode evil-surround
+	 evil-nerd-commenter evil-escape embark-consult elisp-demos
+	 elisp-benchmarks ef-themes dumb-jump doom-modeline dirvish
+	 counsel-etags cnfonts citre ace-window)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
