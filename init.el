@@ -1,12 +1,3 @@
-;; 移动总结
-;; 字符移动 h j k l
-;; 单词移动 w e b W E B
-;; 行内移动 M-a M-e f ;
-;; 段落移动 n m %
-;; 屏幕移动 H M L
-;; 全文移动 ,ss * gg G C-d C-u
-;; 项目移动 ,qq ,md ,mr C-o C-i
-
 ;; (setq w32-get-true-file-attributes nil   ; decrease file IO workload
 ;;       w32-use-native-image-API t         ; use native w32 API
 ;;       w32-pipe-read-delay 0              ; faster IPC
