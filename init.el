@@ -1,3 +1,12 @@
+;; 移动总结
+;; 字符移动 h j k l
+;; 单词移动 w e b W E B
+;; 行内移动 M-a M-e f ;
+;; 段落移动 n m %
+;; 屏幕移动 H M L
+;; 全文移动 ,ss * gg G C-d C-u
+;; 项目移动 ,qq ,md ,mr C-o C-i
+
 ;; (setq w32-get-true-file-attributes nil   ; decrease file IO workload
 ;;       w32-use-native-image-API t         ; use native w32 API
 ;;       w32-pipe-read-delay 0              ; faster IPC
@@ -364,6 +373,7 @@
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>cf") 'lsp-bridge-code-format)
     ;; misc
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>yy") 'consult-yank-from-kill-ring)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>,") 'evilnc-comment-or-uncomment-lines)
     (evil-define-key '(normal visual motion) 'global "u" (lambda () (interactive) (if (not (fboundp 'vundo)) (evil-undo 1) (vundo) (vundo-backward 1))))
     ;; (evil-define-key '(normal visual motion) 'global "n" 'evil-backward-paragraph)
     ;; (evil-define-key '(normal visual motion) 'global "m" 'evil-forward-paragraph)
@@ -447,7 +457,7 @@
 (use-package evil-nerd-commenter
   :after (evil)
   :ensure t
-  :config (evilnc-default-hotkeys))
+  )
 
 ;; visual mode : S<textobj>
 ;; normal : ys<textobj> cs<textobj> ds<textobj>
@@ -681,6 +691,40 @@
 ;;   (setq gc-cons-percentage 0.1) ; original value
 ;;   (garbage-collect))
 ;; (run-with-idle-timer 4 nil #'my-cleanup-gc)
+
+(use-package dape
+  :ensure t
+  ;; To use window configuration like gud (gdb-mi)
+  ;; :init
+  ;; (setq dape-buffer-window-arrangement 'gud)
+
+  :config
+  ;; Info buffers to the right
+  ;; (setq dape-buffer-window-arrangement 'right)
+
+  ;; To not display info and/or buffers on startup
+  ;; (remove-hook 'dape-on-start-hooks 'dape-info)
+  ;; (remove-hook 'dape-on-start-hooks 'dape-repl)
+
+  ;; To display info and/or repl buffers on stopped
+  ;; (add-hook 'dape-on-stopped-hooks 'dape-info)
+  ;; (add-hook 'dape-on-stopped-hooks 'dape-repl)
+
+  ;; By default dape uses gdb keybinding prefix
+  ;; If you do not want to use any prefix, set it to nil.
+  ;; (setq dape-key-prefix "\C-x\C-a")
+
+  ;; Kill compile buffer on build success
+  ;; (add-hook 'dape-compile-compile-hooks 'kill-buffer)
+
+  ;; Save buffers on startup, useful for interpreted languages
+  ;; (add-hook 'dape-on-start-hooks
+  ;;           (defun dape--save-on-start ()
+  ;;             (save-some-buffers t t)))
+
+  ;; Projectile users
+  ;; (setq dape-cwd-fn 'projectile-project-root)
+  )
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
