@@ -1,8 +1,9 @@
-(setq gc-cons-percentage 0.6)
-(setq gc-cons-threshold most-positive-fixnum)
+;; (setq gc-cons-percentage 0.6)
+;; (setq gc-cons-threshold most-positive-fixnum)
 (setq inhibit-startup-message t)
 (setq default-frame-alist
-      '((menu-bar-lines . 0)
+      '(
+	(menu-bar-lines . 0)
         (tool-bar-lines . 0)
         (horizontal-scroll-bars)
         (vertical-scroll-bars)))
@@ -14,5 +15,5 @@
     (set-frame-height (selected-frame) 50))
 (xiaozhu/reset-frame-size)
 (add-hook 'after-make-frame-functions 'xiaozhu/reset-frame-size)
-(setq inhibit-automatic-native-compilation t)
+;; (setq inhibit-automatic-native-compilation t)
 (global-display-line-numbers-mode)
