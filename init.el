@@ -7,13 +7,14 @@
 ;; 全文移动 ,ss * gg G C-d C-u
 ;; 项目移动 ,qq ,md ,mr C-o C-i
 
-(setq w32-get-true-file-attributes nil   ; decrease file IO workload
-      w32-use-native-image-API t         ; use native w32 API
-      w32-pipe-read-delay 0              ; faster IPC
-      w32-pipe-buffer-size (* 64 1024))
+;; (setq w32-get-true-file-attributes nil   ; decrease file IO workload
+;;       w32-use-native-image-API t         ; use native w32 API
+;;       w32-pipe-read-delay 0              ; faster IPC
+;;       w32-pipe-buffer-size (* 64 1024))
 
-(setq read-process-output-max (* 1024 1024))
+;; (setq read-process-output-max (* 1024 1024))
 (setq confirm-kill-processes nil)
+;; 让 ffap 在解析文本时，不尝试去解析网络主机名
 (setq ffap-machine-p-known 'reject)
 (setq mouse-wheel-scroll-amount '(3 ((shift) . 1) ((control) . 10)))
 (setq mouse-wheel-progressive-speed nil)
@@ -39,12 +40,11 @@
       (indent-according-to-mode)
     (beginning-of-line)))
 
-
 (setq ring-bell-function 'ignore)
 (fset 'yes-or-no-p 'y-or-n-p)
 
 ;; 包设置
-(require 'package)
+;; (require 'package)
 ;; (setq package-archives '(("gnu"    . "http://mirrors.bfsu.edu.cn/elpa/gnu/")
 ;;                          ("nongnu" . "http://mirrors.bfsu.edu.cn/elpa/nongnu/")
 ;;                          ("melpa"  . "http://mirrors.bfsu.edu.cn/elpa/melpa/")))
@@ -52,11 +52,11 @@
                         ("melpa" . "https://mirrors.sjtug.sjtu.edu.cn/emacs-elpa/melpa/")))
 (package-initialize)
 
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-(setq use-package-always-ensure t)
-(require 'use-package)
+;; (unless (package-installed-p 'use-package)
+;;   (package-refresh-contents)
+;;   (package-install 'use-package))
+;; (setq use-package-always-ensure t)
+;; (require 'use-package)
 
 (add-to-list 'prog-mode-hook #'hs-minor-mode)
 
@@ -67,7 +67,6 @@
 	    (cnfonts-mode 1)
 	    (define-key cnfonts-mode-map (kbd "C--") #'cnfonts-decrease-fontsize)
 	    (define-key cnfonts-mode-map (kbd "C-=") #'cnfonts-increase-fontsize)
-	    (setq cnfonts-personal-fontnames '(() ("更纱黑体 SC") () () ()))
 	    ))
 
 (use-package expand-region
@@ -96,10 +95,10 @@
   :ensure t
   :config (doom-modeline-mode 1))
 
-(use-package org
-  :ensure t
-  :bind ("C-c C-a" . org-agenda)
-  :config (setq org-agenda-files '("~/gtd.org")))
+;; (use-package org
+;;   :ensure t
+;;   :bind ("C-c C-a" . org-agenda)
+;;   :config (setq org-agenda-files '("~/gtd.org")))
 
 (use-package ef-themes
   :ensure t
@@ -176,6 +175,7 @@
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
+
 ;; 多个#二次过滤，!筛选
 (use-package consult
   :ensure t
@@ -234,8 +234,8 @@
 
 (setq lsp-bridge-get-project-path-by-filepath
       (lambda (filepath)
-        (when (locate-dominating-file filepath ".myproject")
-	  (expand-file-name (locate-dominating-file filepath ".myproject")))))
+        (when (locate-dominating-file filepath ".mypro")
+	  (expand-file-name (locate-dominating-file filepath ".mypro")))))
 
 ;; pip install epc orjson sexpdata six paramiko
 (add-to-list 'load-path "~/emacs-plugin/lsp-bridge")
@@ -268,11 +268,11 @@
   (consult-directory-externally default-directory))
 
 ;; ; 选中后按?还有其他功能
-(use-package avy
-  :defer 3
-  :config (setq avy-timeout-seconds 5)
-  :ensure t
-  :bind ("C-'" . avy-goto-char-timer))
+;; (use-package avy
+;;   :defer 3
+;;   :config (setq avy-timeout-seconds 5)
+;;   :ensure t
+;;   :bind ("C-'" . avy-goto-char-timer))
 
 (use-package projectile
   :ensure t
@@ -285,10 +285,10 @@
   :ensure t
   :commands (counsel-apropos))
 
-(use-package keycast
-  :ensure t
-  :commands (keycast-header-line-mode)
-  )
+;; (use-package keycast
+;;   :ensure t
+;;   :commands (keycast-header-line-mode)
+;;   )
 
 (defun smart-q ()
   "Delete window in read-only buffers, otherwise record macro."
@@ -303,6 +303,7 @@
   :ensure t
   :init
   (setq evil-want-C-u-scroll t)
+  (setq evil-want-keybinding nil)
   :config
   (progn
     (evil-mode 1)
@@ -321,7 +322,7 @@
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>bb") 'switch-to-buffer)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>bo") 'switch-to-buffer-other-window)
     ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>be") (lambda () (interactive) (revert-buffer-with-coding-system 'utf-8)))
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>bk") 'kill-buffer)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>bd") 'kill-buffer)
     ;; bookmark
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>ba") 'consult-bookmark)
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>bd") 'bookmark-delete)
@@ -352,29 +353,29 @@
     (evil-define-key '(normal visual motion) 'global (kbd "M-2") 'winum-select-window-2)
     (evil-define-key '(normal visual motion) 'global (kbd "M-3") 'winum-select-window-3)
     (evil-define-key '(normal visual motion) 'global (kbd "M-4") 'winum-select-window-4)
-    (evil-define-key '(normal visual motion) 'global (kbd "M-0") 'kill-buffer-and-window)
-    (evil-define-key '(normal visual motion) 'global (kbd "M-o") 'delete-other-windows)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>wd") 'delete-window)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>wo") 'delete-other-windows)
     (evil-define-key '(normal visual motion) 'global (kbd "M-/") 'split-window-right)
     (evil-define-key '(normal visual motion) 'global (kbd "M--") 'split-window-below)
     (evil-define-key '(normal visual motion) 'global (kbd "<localleader>h") 'auto-highlight-symbol-mode)
     (evil-define-key '(normal visual motion) 'global (kbd "<localleader>l") 'toggle-truncate-lines)
     ;; org mode
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>oo") 'org-agenda-list)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>oa") 'org-agenda)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>of") #'(lambda () (interactive) (find-file "~/todo.org")))
+    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>oo") 'org-agenda-list)
+    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>oa") 'org-agenda)
+    ;; (evil-define-key '(normal visual motion) 'global (kbd "<leader>of") #'(lambda () (interactive) (find-file "~/todo.org")))
     ;; lsp
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>mb") 'quickrun)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>md") 'lsp-bridge-find-def)    ;; go def use lsp-bridge
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>mr") 'lsp-bridge-find-references)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>mo") 'lsp-bridge-popup-documentation)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>ma") 'lsp-bridge-diagnostic-list)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>ms") 'lsp-bridge-workspace-list-symbols)
-    (evil-define-key '(normal visual motion) 'global (kbd "<leader>mf") 'lsp-bridge-code-format)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>cc") 'quickrun)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>cd") 'lsp-bridge-find-def)    ;; go def use lsp-bridge
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>cr") 'lsp-bridge-find-references)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>co") 'lsp-bridge-popup-documentation)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>ca") 'lsp-bridge-diagnostic-list)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>cs") 'lsp-bridge-workspace-list-symbols)
+    (evil-define-key '(normal visual motion) 'global (kbd "<leader>cf") 'lsp-bridge-code-format)
     ;; misc
     (evil-define-key '(normal visual motion) 'global (kbd "<leader>yy") 'consult-yank-from-kill-ring)
     (evil-define-key '(normal visual motion) 'global "u" (lambda () (interactive) (if (not (fboundp 'vundo)) (evil-undo 1) (vundo) (vundo-backward 1))))
-    (evil-define-key '(normal visual motion) 'global "n" 'evil-backward-paragraph)
-    (evil-define-key '(normal visual motion) 'global "m" 'evil-forward-paragraph)
+    ;; (evil-define-key '(normal visual motion) 'global "n" 'evil-backward-paragraph)
+    ;; (evil-define-key '(normal visual motion) 'global "m" 'evil-forward-paragraph)
     (define-key evil-normal-state-map (kbd "<tab>") 'evil-switch-to-windows-last-buffer)
     (define-key evil-normal-state-map (kbd "q") 'smart-q)
     (define-key evil-normal-state-map (kbd "+") 'er/expand-region)
@@ -394,8 +395,15 @@
       ")" 'dired-omit-mode)
     ))
 
+(use-package evil-collection
+  :after evil
+  :ensure t
+  :config
+  (evil-collection-init))
+
 (cl-loop for (mode . state) in
-	 '((org-agenda-mode . normal)
+	 '(
+	   ;; (org-agenda-mode . normal)
 	   (lsp-bridge-ref-mode . emacs)
 	   (eshell-mode . emacs)
 	   (magit-mode . emacs)
@@ -513,110 +521,110 @@
   :interpreter ("lua" . lua-mode)
   )
 
-(add-to-list 'load-path "~/emacs-plugin/awesome-pair") ; add awesome-pair to your load-path
-(require 'awesome-pair)
-(dolist (hook (list
-               'c-mode-common-hook
-               'c-mode-hook
-               'c++-mode-hook
-               'java-mode-hook
-               'haskell-mode-hook
-               'emacs-lisp-mode-hook
-               'lisp-interaction-mode-hook
-               'lisp-mode-hook
-               'maxima-mode-hook
-               'ielm-mode-hook
-               'sh-mode-hook
-               'makefile-gmake-mode-hook
-               'php-mode-hook
-               'python-mode-hook
-               'js-mode-hook
-               'go-mode-hook
-               'qml-mode-hook
-               'jade-mode-hook
-               'css-mode-hook
-               'ruby-mode-hook
-               'coffee-mode-hook
-               'rust-mode-hook
-               'qmake-mode-hook
-               'lua-mode-hook
-               'swift-mode-hook
-               'minibuffer-inactive-mode-hook
-	       'web-mode-hook
-               ))
-  (add-hook hook '(lambda () (awesome-pair-mode 1))))
-(define-key awesome-pair-mode-map (kbd "(") 'awesome-pair-open-round)
-(define-key awesome-pair-mode-map (kbd "[") 'awesome-pair-open-bracket)
-;; (define-key awesome-pair-mode-map (kbd "{") 'awesome-pair-open-curly)
-(define-key awesome-pair-mode-map (kbd ")") 'awesome-pair-close-round)
-(define-key awesome-pair-mode-map (kbd "]") 'awesome-pair-close-bracket)
-(define-key awesome-pair-mode-map (kbd "}") 'awesome-pair-close-curly)
-(define-key awesome-pair-mode-map (kbd "=") 'awesome-pair-equal)
+;; (add-to-list 'load-path "~/emacs-plugin/awesome-pair") ; add awesome-pair to your load-path
+;; (require 'awesome-pair)
+;; (dolist (hook (list
+;;                'c-mode-common-hook
+;;                'c-mode-hook
+;;                'c++-mode-hook
+;;                'java-mode-hook
+;;                'haskell-mode-hook
+;;                'emacs-lisp-mode-hook
+;;                'lisp-interaction-mode-hook
+;;                'lisp-mode-hook
+;;                'maxima-mode-hook
+;;                'ielm-mode-hook
+;;                'sh-mode-hook
+;;                'makefile-gmake-mode-hook
+;;                'php-mode-hook
+;;                'python-mode-hook
+;;                'js-mode-hook
+;;                'go-mode-hook
+;;                'qml-mode-hook
+;;                'jade-mode-hook
+;;                'css-mode-hook
+;;                'ruby-mode-hook
+;;                'coffee-mode-hook
+;;                'rust-mode-hook
+;;                'qmake-mode-hook
+;;                'lua-mode-hook
+;;                'swift-mode-hook
+;;                'minibuffer-inactive-mode-hook
+;; 	       'web-mode-hook
+;;                ))
+;;   (add-hook hook '(lambda () (awesome-pair-mode 1))))
+;; (define-key awesome-pair-mode-map (kbd "(") 'awesome-pair-open-round)
+;; (define-key awesome-pair-mode-map (kbd "[") 'awesome-pair-open-bracket)
+;; ;; (define-key awesome-pair-mode-map (kbd "{") 'awesome-pair-open-curly)
+;; (define-key awesome-pair-mode-map (kbd ")") 'awesome-pair-close-round)
+;; (define-key awesome-pair-mode-map (kbd "]") 'awesome-pair-close-bracket)
+;; (define-key awesome-pair-mode-map (kbd "}") 'awesome-pair-close-curly)
+;; (define-key awesome-pair-mode-map (kbd "=") 'awesome-pair-equal)
 
-;; (define-key awesome-pair-mode-map (kbd "%") 'awesome-pair-match-paren)
-;; (define-key awesome-pair-mode-map (kbd "\"") 'awesome-pair-double-quote)
+;; ;; (define-key awesome-pair-mode-map (kbd "%") 'awesome-pair-match-paren)
+;; ;; (define-key awesome-pair-mode-map (kbd "\"") 'awesome-pair-double-quote)
 
-;; (define-key awesome-pair-mode-map (kbd "SPC") 'awesome-pair-space)
-;; 设置之后回车只换行不补全
-(define-key awesome-pair-mode-map (kbd "RET") 'awesome-pair-newline)
+;; ;; (define-key awesome-pair-mode-map (kbd "SPC") 'awesome-pair-space)
+;; ;; 设置之后回车只换行不补全
+;; (define-key awesome-pair-mode-map (kbd "RET") 'awesome-pair-newline)
 
-(define-key awesome-pair-mode-map (kbd "C-S-d") 'awesome-pair-backward-delete)
-(define-key awesome-pair-mode-map (kbd "C-d") 'awesome-pair-forward-delete)
-(define-key awesome-pair-mode-map (kbd "C-k") 'awesome-pair-kill)
+;; (define-key awesome-pair-mode-map (kbd "C-S-d") 'awesome-pair-backward-delete)
+;; (define-key awesome-pair-mode-map (kbd "C-d") 'awesome-pair-forward-delete)
+;; (define-key awesome-pair-mode-map (kbd "C-k") 'awesome-pair-kill)
 
-(define-key awesome-pair-mode-map (kbd "M-\"") 'awesome-pair-wrap-double-quote)
-(define-key awesome-pair-mode-map (kbd "M-[") 'awesome-pair-wrap-bracket)
-(define-key awesome-pair-mode-map (kbd "M-{") 'awesome-pair-wrap-curly)
-(define-key awesome-pair-mode-map (kbd "M-(") 'awesome-pair-wrap-round)
-(define-key awesome-pair-mode-map (kbd "M-)") 'awesome-pair-unwrap)
+;; (define-key awesome-pair-mode-map (kbd "M-\"") 'awesome-pair-wrap-double-quote)
+;; (define-key awesome-pair-mode-map (kbd "M-[") 'awesome-pair-wrap-bracket)
+;; (define-key awesome-pair-mode-map (kbd "M-{") 'awesome-pair-wrap-curly)
+;; (define-key awesome-pair-mode-map (kbd "M-(") 'awesome-pair-wrap-round)
+;; (define-key awesome-pair-mode-map (kbd "M-)") 'awesome-pair-unwrap)
 
-(define-key awesome-pair-mode-map (kbd "M-p") 'awesome-pair-jump-right)
-(define-key awesome-pair-mode-map (kbd "M-n") 'awesome-pair-jump-left)
+;; (define-key awesome-pair-mode-map (kbd "M-p") 'awesome-pair-jump-right)
+;; (define-key awesome-pair-mode-map (kbd "M-n") 'awesome-pair-jump-left)
 
-;; custom tag
-(defun awesome-pair-open-percent ()
-  (interactive)
-  (cond
-   ((derived-mode-p 'web-mode)
-    (insert "%%")
-    (backward-char))
-   (t
-    (insert "%")
-    )
-   ))
+;; ;; custom tag
+;; (defun awesome-pair-open-percent ()
+;;   (interactive)
+;;   (cond
+;;    ((derived-mode-p 'web-mode)
+;;     (insert "%%")
+;;     (backward-char))
+;;    (t
+;;     (insert "%")
+;;     )
+;;    ))
 
-(defun awesome-pair-single-quote ()
-  (interactive)
-  (cond
-   ((derived-mode-p 'emacs-lisp-mode)
-    (insert "'"))
-   ((derived-mode-p 'web-mode)
-    (insert "''")
-    (backward-char))
-   ((awesome-pair-in-string-p)
-    (insert "'"))
-   (t
-    (insert "''")
-    (backward-char)
-    )
-   ))
+;; (defun awesome-pair-single-quote ()
+;;   (interactive)
+;;   (cond
+;;    ((derived-mode-p 'emacs-lisp-mode)
+;;     (insert "'"))
+;;    ((derived-mode-p 'web-mode)
+;;     (insert "''")
+;;     (backward-char))
+;;    ((awesome-pair-in-string-p)
+;;     (insert "'"))
+;;    (t
+;;     (insert "''")
+;;     (backward-char)
+;;     )
+;;    ))
 
-(defun awesome-pair-double-quote-my ()
-  (interactive)
-  (insert "\"\"")
-  (backward-char)
-  )
+;; (defun awesome-pair-double-quote-my ()
+;;   (interactive)
+;;   (insert "\"\"")
+;;   (backward-char)
+;;   )
 
-(defun awesome-pair-open-curly-my ()
-  (interactive)
-  (insert "{}")
-  (backward-char)
-  )
+;; (defun awesome-pair-open-curly-my ()
+;;   (interactive)
+;;   (insert "{}")
+;;   (backward-char)
+;;   )
 
-(define-key awesome-pair-mode-map (kbd "{") 'awesome-pair-open-curly-my)
-(define-key awesome-pair-mode-map (kbd "%") 'awesome-pair-open-percent)
-(define-key awesome-pair-mode-map (kbd "'") 'awesome-pair-single-quote)
-(define-key awesome-pair-mode-map (kbd "\"") 'awesome-pair-double-quote-my)
+;; (define-key awesome-pair-mode-map (kbd "{") 'awesome-pair-open-curly-my)
+;; (define-key awesome-pair-mode-map (kbd "%") 'awesome-pair-open-percent)
+;; (define-key awesome-pair-mode-map (kbd "'") 'awesome-pair-single-quote)
+;; (define-key awesome-pair-mode-map (kbd "\"") 'awesome-pair-double-quote-my)
 
 ;; (add-to-list 'load-path "~/emacs-plugin/one-key")
 ;; (add-to-list 'load-path "~/emacs-plugin/thing-edit")
@@ -676,30 +684,19 @@
   :commands (quickrun)
   :ensure t)
 
-(defun my-cleanup-gc ()
-  "Clean up gc."
-  (setq gc-cons-threshold  104857600) ; 100M
-  (setq gc-cons-percentage 0.1) ; original value
-  (garbage-collect))
-(run-with-idle-timer 4 nil #'my-cleanup-gc)
+;; (defun my-cleanup-gc ()
+;;   "Clean up gc."
+;;   (setq gc-cons-threshold  104857600) ; 100M
+;;   (setq gc-cons-percentage 0.1) ; original value
+;;   (garbage-collect))
+;; (run-with-idle-timer 4 nil #'my-cleanup-gc)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(avy evil-multiedit iedit evil-matchit evil-snipe evil-anzu
-	 format-all block-nav org-mode consult-yasnippet consult-lsp
-	 flymake-elisp-config whitespace4r zenburn-theme
-	 yasnippet-snippets winum which-key vundo vertico treesit-auto
-	 smartparens shackle rust-mode restart-emacs
-	 rainbow-delimiters quickrun projectile-ripgrep popper
-	 paredit-everywhere orderless meow markdown-mode marginalia
-	 magit lua-mode keycast helpful go-mode evil-surround
-	 evil-nerd-commenter evil-escape embark-consult elisp-demos
-	 elisp-benchmarks ef-themes dumb-jump doom-modeline dirvish
-	 counsel-etags cnfonts citre ace-window)))
+ '(package-selected-packages nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
